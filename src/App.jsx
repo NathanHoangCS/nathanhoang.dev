@@ -6,7 +6,7 @@ import { useState, useEffect, useRef, } from "react";
 const PROJECTS = [
   {
     id: 1,
-    title: "Surge",
+    title: "Surge Live",
     description: "Surge Live is a full-stack web application that simulates a sports and esports prediction marketplace using virtual currency. The platform allows users to place picks on live and upcoming events, track performance metrics such as accuracy and streaks, and compete on dynamic leaderboards.",
     tags: ["Full-Stack", "JavaScript", "Node.js", "REST API"],
     github: "https://github.com/NathanHoangCS/Surge-Live",
