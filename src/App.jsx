@@ -56,10 +56,10 @@ const PROJECTS = [
   },
   {
     id: 5,
-    title: "Kairos",
+    title: "PlanWise",
     description: "A smart calendar that learns from your scheduling habits using ML to suggest optimal meeting times and protect focus blocks.",
     tags: ["Python", "FastAPI", "React", "PostgreSQL", "ML"],
-    github: "https://github.com",
+    github: "https://github.com/NathanHoangCS/PlanWise",
     demo: "https://demo.com",
     featured: false,
     case: null,
