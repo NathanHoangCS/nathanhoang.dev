@@ -1020,7 +1020,30 @@ function WritingContent() {
 function ContactContent() {
   const [form, setForm] = useState({ name: "", email: "", msg: "" });
   const [sent, setSent] = useState(false);
-  const send = () => { if (!form.name || !form.email || !form.msg) return; setTimeout(() => setSent(true), 400); };
+  const [error, setError] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const send = async () => {
+    if (!form.name || !form.email || !form.msg) return;
+    setSending(true);
+    setError(false);
+    try {
+      const res = await fetch("https://formspree.io/f/mkokbkpj", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.msg }),
+      });
+      if (res.ok) {
+        setSent(true);
+      } else {
+        setError(true);
+      }
+    } catch {
+      setError(true);
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <div className="fade">
@@ -1053,7 +1076,14 @@ function ContactContent() {
             <input className="f-inp" placeholder="your@email.com" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
             <label className="f-lbl">Message</label>
             <textarea className="f-inp" rows={5} placeholder="What's on your mind..." style={{ resize:"none" }} value={form.msg} onChange={e => setForm({...form, msg: e.target.value})} />
-            <button className="f-btn" onClick={send}>Send Message</button>
+            {error && (
+                <div style={{ fontSize: 11, color: "rgba(220,80,80,0.9)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10, padding: "8px 10px", background: "rgba(180,40,40,0.12)", border: "1px solid rgba(180,40,40,0.25)" }}>
+                  Something went wrong. Please try again.
+                </div>
+              )}
+            <button className="f-btn" onClick={send} disabled={sending} style={{ opacity: sending ? 0.65 : 1, cursor: sending ? "wait" : "pointer" }}>
+              {sending ? "Sending..." : "Send Message"}
+            </button>
           </div>
         </div>
       )}
