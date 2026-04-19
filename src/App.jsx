@@ -155,11 +155,11 @@ const css = `
   }
 
   .tv-bezel {
-    width: 660px;
+    width: min(96vw, 1000px);
     background: #181008;
     border-radius: 14px 14px 8px 8px;
     border: 3px solid #2c1e0a;
-    padding: 20px 24px 16px;
+    padding: 22px 28px 18px;
     position: relative;
     box-shadow:
       inset 0 0 40px rgba(0,0,0,0.85),
@@ -174,7 +174,7 @@ const css = `
     top: 50%;
     left: 10px;
     transform: translateY(-50%);
-    font-size: 8px;
+    font-size: 10px;
     color: #1e1208;
     letter-spacing: 2px;
     writing-mode: vertical-lr;
@@ -187,7 +187,7 @@ const css = `
     top: 50%;
     right: 10px;
     transform: translateY(-50%);
-    font-size: 8px;
+    font-size: 10px;
     color: #1e1208;
     letter-spacing: 2px;
     writing-mode: vertical-lr;
@@ -204,8 +204,8 @@ const css = `
 
   .tv-brand {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: #2e1e08;
+    font-size: 11px;
+    color: #806840;
     letter-spacing: 0.35em;
     text-transform: uppercase;
   }
@@ -222,7 +222,7 @@ const css = `
 
   .tv-screen {
     width: 100%;
-    aspect-ratio: 16/10;
+    aspect-ratio: 16/10; max-height: 88vh;
     background: #040200;
     border-radius: 6px;
     overflow: hidden;
@@ -328,8 +328,8 @@ const css = `
   }
 
   .home-eyebrow {
-    font-size: 9px;
-    color: #4a2e10;
+    font-size: 11px;
+    color: #907040;
     letter-spacing: 0.45em;
     text-transform: uppercase;
     margin-bottom: 14px;
@@ -346,8 +346,8 @@ const css = `
 
   .home-name {
     font-family: 'Black Ops One', cursive;
-    font-size: 46px;
-    color: #ecdcc0;
+    font-size: clamp(40px, 5.5vw, 68px);
+    color: #fff8e8;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     text-align: center;
@@ -359,8 +359,8 @@ const css = `
   .home-role {
     font-family: 'Oswald', sans-serif;
     font-weight: 400;
-    font-size: 13px;
-    color: #8a6030;
+    font-size: 15px;
+    color: #c09050;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     text-align: center;
@@ -387,7 +387,7 @@ const css = `
     align-items: center;
     justify-content: center;
     gap: 14px;
-    padding: 9px 24px;
+    padding: 11px 24px;
     cursor: pointer;
     position: relative;
     transition: background 0.12s;
@@ -409,8 +409,8 @@ const css = `
   }
 
   .nav-index {
-    font-size: 9px;
-    color: #2a1808;
+    font-size: 11px;
+    color: #806840;
     letter-spacing: 0.1em;
     min-width: 16px;
     font-family: 'Share Tech Mono', monospace;
@@ -418,8 +418,8 @@ const css = `
 
   .nav-label {
     font-family: 'Black Ops One', cursive;
-    font-size: 22px;
-    color: #907050;
+    font-size: clamp(20px, 2.8vw, 30px);
+    color: #d09858;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     transition: color 0.12s, text-shadow 0.12s;
@@ -457,8 +457,8 @@ const css = `
 
   .home-footer {
     margin-top: 20px;
-    font-size: 8px;
-    color: #2e1e08;
+    font-size: 10px;
+    color: #806840;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     text-align: center;
@@ -519,15 +519,15 @@ const css = `
 
   .topbar-title {
     font-family: 'Black Ops One', cursive;
-    font-size: 17px;
-    color: #c8a060;
+    font-size: 20px;
+    color: #ecc060;
     letter-spacing: 0.1em;
     text-shadow: 0 0 20px rgba(180,100,10,0.3);
   }
 
   .topbar-back {
-    font-size: 9px;
-    color: #4a2e10;
+    font-size: 11px;
+    color: #907040;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     cursor: pointer;
@@ -545,7 +545,7 @@ const css = `
   .sec-body {
     flex: 1;
     overflow-y: auto;
-    padding: 14px 18px;
+    padding: 18px 24px;
     scrollbar-width: thin;
     scrollbar-color: #2a1004 #040200;
   }
@@ -571,7 +571,7 @@ const css = `
     justify-content: center;
     font-family: 'Black Ops One', cursive;
     font-size: 16px;
-    color: #c8a060;
+    color: #ecc060;
     flex-shrink: 0;
     text-shadow: 0 0 14px rgba(180,100,10,0.4);
   }
@@ -579,16 +579,16 @@ const css = `
   .about-fullname {
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
-    font-size: 18px;
-    color: #dcc898;
+    font-size: 24px;
+    color: #f0dca8;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     margin-bottom: 3px;
   }
 
   .about-subtitle {
-    font-size: 9px;
-    color: #6a4820;
+    font-size: 11px;
+    color: #c09050;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     margin-bottom: 6px;
@@ -598,7 +598,7 @@ const css = `
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-size: 8px;
+    font-size: 10px;
     color: #8a5020;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -626,15 +626,15 @@ const css = `
 
   .stat-v {
     font-family: 'Black Ops One', cursive;
-    font-size: 18px;
-    color: #d8c098;
+    font-size: 24px;
+    color: #f0dca8;
     display: block;
     line-height: 1;
   }
 
   .stat-l {
-    font-size: 7px;
-    color: #3e2510;
+    font-size: 9px;
+    color: #806030;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     display: block;
@@ -642,8 +642,8 @@ const css = `
   }
 
   .bio {
-    font-size: 9.5px;
-    color: #6e5030;
+    font-size: 14px;
+    color: #b89868;
     line-height: 1.95;
     border-left: 2px solid #180e04;
     padding-left: 12px;
@@ -653,8 +653,8 @@ const css = `
   .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
 
   .tag {
-    font-size: 7.5px;
-    color: #6a4820;
+    font-size: 10px;
+    color: #c09050;
     border: 1px solid #1e1004;
     padding: 2px 6px;
     letter-spacing: 0.12em;
@@ -675,20 +675,20 @@ const css = `
   .nb-label {
     font-family: 'Oswald', sans-serif;
     font-size: 11px;
-    color: #c8a060;
+    color: #ecc060;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 3px;
   }
 
-  .nb-sub { font-size: 8.5px; color: #3e2510; }
+  .nb-sub { font-size: 11px; color: #806030; }
 
   /* PROJECTS */
   .proj-card {
     background: #080400;
     border: 1px solid #180e04;
     border-left: 3px solid #1a1004;
-    padding: 12px 14px;
+    padding: 16px 18px;
     margin-bottom: 8px;
     transition: border-left-color 0.12s, background 0.12s;
   }
@@ -706,14 +706,14 @@ const css = `
   .proj-title {
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
-    font-size: 13px;
-    color: #d0b870;
+    font-size: 15px;
+    color: #f0d080;
     letter-spacing: 0.07em;
     text-transform: uppercase;
   }
 
   .proj-badge {
-    font-size: 7px;
+    font-size: 9px;
     color: #aa2200;
     border: 1px solid #3e1000;
     padding: 2px 5px;
@@ -723,8 +723,8 @@ const css = `
   }
 
   .proj-desc {
-    font-size: 9px;
-    color: #4a3418;
+    font-size: 11px;
+    color: #9a7848;
     line-height: 1.75;
     margin-bottom: 9px;
   }
@@ -732,8 +732,8 @@ const css = `
   .proj-links { display: flex; gap: 6px; }
 
   .p-link {
-    font-size: 8px;
-    color: #5a4020;
+    font-size: 10px;
+    color: #a88048;
     border: 1px solid #1e1004;
     padding: 3px 8px;
     text-decoration: none;
@@ -748,7 +748,7 @@ const css = `
   .skill-group { margin-bottom: 16px; }
 
   .skill-cat {
-    font-size: 8px;
+    font-size: 10px;
     color: #9a2a00;
     letter-spacing: 0.35em;
     text-transform: uppercase;
@@ -767,13 +767,13 @@ const css = `
   }
 
   .skill-name {
-    font-size: 9px;
-    color: #5e4020;
-    min-width: 148px;
+    font-size: 11px;
+    color: #a88048;
+    min-width: 180px;
   }
 
   .bar-bg {
-    flex: 1; height: 4px;
+    flex: 1; height: 6px;
     background: #0e0800;
     border: 1px solid #180e04;
     overflow: hidden;
@@ -786,7 +786,7 @@ const css = `
   }
 
   .skill-pct {
-    font-size: 8px;
+    font-size: 10px;
     color: #2e1c08;
     min-width: 26px;
     text-align: right;
@@ -796,7 +796,7 @@ const css = `
   .intel-card {
     background: #080400;
     border: 1px solid #180e04;
-    padding: 12px 14px;
+    padding: 16px 18px;
     margin-bottom: 8px;
     transition: background 0.12s;
   }
@@ -811,8 +811,8 @@ const css = `
 
   .intel-title {
     font-family: 'Oswald', sans-serif;
-    font-size: 12px;
-    color: #c0a060;
+    font-size: 14px;
+    color: #e8be60;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 1.3;
@@ -821,8 +821,8 @@ const css = `
   }
 
   .intel-meta {
-    font-size: 7.5px;
-    color: #3a2010;
+    font-size: 10px;
+    color: #806030;
     letter-spacing: 0.1em;
     text-align: right;
     flex-shrink: 0;
@@ -830,8 +830,8 @@ const css = `
   }
 
   .intel-excerpt {
-    font-size: 9px;
-    color: #4a3418;
+    font-size: 11px;
+    color: #9a7848;
     line-height: 1.75;
     margin-top: 6px;
   }
@@ -863,28 +863,28 @@ const css = `
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
+    font-size: 11px;
     color: #9a2800;
     flex-shrink: 0;
     font-family: 'Oswald', sans-serif;
   }
 
   .c-label {
-    font-size: 7.5px;
-    color: #3a2010;
+    font-size: 10px;
+    color: #806030;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     margin-bottom: 2px;
   }
 
-  .c-val { font-size: 8.5px; color: #5e4020; word-break: break-all; }
+  .c-val { font-size: 11px; color: #a88048; word-break: break-all; }
 
   .form-divider { height: 1px; background: #180e04; margin-bottom: 12px; }
 
   .f-label {
     font-family: 'Oswald', sans-serif;
-    font-size: 8px;
-    color: #4a2e10;
+    font-size: 10px;
+    color: #907040;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     display: block;
@@ -895,9 +895,9 @@ const css = `
     width: 100%;
     background: #060300;
     border: 1px solid #200e04;
-    color: #c0a060;
+    color: #e8be60;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9.5px;
+    font-size: 14px;
     padding: 7px 9px;
     outline: none;
     letter-spacing: 0.04em;
@@ -913,7 +913,7 @@ const css = `
     border: 1px solid #3a0e00;
     color: #e0c090;
     font-family: 'Black Ops One', cursive;
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     padding: 9px;
@@ -927,12 +927,12 @@ const css = `
   .sent-title {
     font-family: 'Black Ops One', cursive;
     font-size: 16px;
-    color: #c8a060;
+    color: #ecc060;
     letter-spacing: 0.1em;
     margin-bottom: 5px;
     text-shadow: 0 0 16px rgba(180,90,10,0.3);
   }
-  .sent-sub { font-size: 8px; color: #3a2010; letter-spacing: 0.25em; text-transform: uppercase; }
+  .sent-sub { font-size: 10px; color: #806030; letter-spacing: 0.25em; text-transform: uppercase; }
 
   /* STAND */
   .stand-neck {
