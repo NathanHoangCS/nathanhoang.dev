@@ -110,7 +110,7 @@ const css = `
     color: rgba(168,180,200,0.65); cursor: pointer;
     border-right: 1px solid rgba(80,120,180,0.05);
     transition: color 0.15s, background 0.15s;
-    user-select: none; position: relative;
+    user-select: none; position: relative; overflow: hidden;
   }
 
   .nav-tab:hover { color: rgba(215,225,240,0.92); background: rgba(50,65,95,0.25); }
@@ -175,7 +175,7 @@ const css = `
 
   .profile-name {
     font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 17px; color: #ede0b0; letter-spacing: 0.04em;
+    font-size: 17px; color: #dde4f0; letter-spacing: 0.04em; min-height: 22px; display: inline-block; max-width: 160px;
   }
 
   .profile-sub {
@@ -319,6 +319,83 @@ const css = `
 
   @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
   .fade { animation: fadeIn 0.25s ease; }
+
+  /* ── SCAN LINE SWEEP ── */
+  .scanline-sweep {
+    position: fixed; inset: 0; z-index: 9999;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .scanline-sweep::before {
+    content: '';
+    position: absolute; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, rgba(140,180,230,0.9) 30%, rgba(180,210,255,1) 50%, rgba(140,180,230,0.9) 70%, transparent 100%);
+    box-shadow: 0 0 18px 4px rgba(140,180,230,0.5), 0 0 40px 8px rgba(100,150,220,0.2);
+    animation: sweepDown 1.1s cubic-bezier(0.4,0,0.6,1) forwards;
+    top: -4px;
+  }
+
+  .scanline-sweep::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(160,190,230,0.04);
+    animation: sweepFade 1.1s ease forwards;
+  }
+
+  @keyframes sweepDown {
+    0%   { top: -4px; opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 0.9; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  @keyframes sweepFade {
+    0%   { opacity: 1; }
+    60%  { opacity: 0.4; }
+    100% { opacity: 0; }
+  }
+
+  /* ── LIST ITEM STAGGER ── */
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-18px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .list-item-anim {
+    animation: slideInLeft 0.22s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  /* ── TYPEWRITER ── */
+  @keyframes blink-caret {
+    0%,100% { border-color: rgba(91,138,184,0.9); }
+    50%     { border-color: transparent; }
+  }
+
+  .typewriter {
+    overflow: hidden;
+    border-right: 2px solid rgba(91,138,184,0.9);
+    white-space: nowrap;
+    animation: blink-caret 0.75s step-end infinite;
+  }
+
+  .typewriter.done {
+    border-color: transparent;
+    animation: none;
+  }
+
+  /* ── NAV TAB HOVER BORDER SLIDE ── */
+  .nav-tab::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    height: 2px; width: 0;
+    background: rgba(91,138,184,0.6);
+    transition: width 0.25s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .nav-tab:hover::before { width: 100%; }
+  .nav-tab.on::before { width: 100%; background: rgba(91,138,184,0.3); }
 
   /* ── HOME / ABOUT ── */
   .about-name {
@@ -1002,9 +1079,40 @@ const LEFT_LISTS = {
 
 const LEFT_TITLES = { Home: "Projects", Projects: "All Projects", Skills: "Categories", Writing: "Articles", Contact: "Links" };
 
+function useTypewriter(text, speed = 55, startDelay = 900) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    setDisplayed("");
+    setDone(false);
+    let i = 0;
+    const delay = setTimeout(() => {
+      const t = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) { clearInterval(t); setTimeout(() => setDone(true), 600); }
+      }, speed);
+      return () => clearInterval(t);
+    }, startDelay);
+    return () => clearTimeout(delay);
+  }, [text, speed, startDelay]);
+  return [displayed, done];
+}
+
 export default function App() {
   const [tab, setTab] = useState("Home");
   const [activeItem, setActiveItem] = useState(0);
+  const [listKey, setListKey] = useState(0);
+  const [sweepDone, setSweepDone] = useState(false);
+  const [typedName, nameDone] = useTypewriter("Nathan Hoang", 60, 800);
+
+  useEffect(() => { const t = setTimeout(() => setSweepDone(true), 1200); return () => clearTimeout(t); }, []);
+
+  const switchTab = (t) => {
+    setTab(t);
+    setActiveItem(0);
+    setListKey(k => k + 1);
+  };
 
   const list = LEFT_LISTS[tab] || [];
 
@@ -1026,14 +1134,17 @@ export default function App() {
       <div className="app">
         <div className="bg-layer" />
 
+        {/* SCAN LINE SWEEP */}
+        {!sweepDone && <div className="scanline-sweep" />}
+
         {/* TOP NAV */}
         <nav className="topnav">
-          <div className="nav-home" onClick={() => setTab("Home")}>
+          <div className="nav-home" onClick={() => switchTab("Home")}>
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
           </div>
           <div className="nav-tabs">
             {TABS.map(t => (
-              <div key={t} className={`nav-tab ${tab === t ? "on" : ""}`} onClick={() => { setTab(t); setActiveItem(0); }}>{t}</div>
+              <div key={t} className={`nav-tab ${tab === t ? "on" : ""}`} onClick={() => switchTab(t)}>{t}</div>
             ))}
           </div>
           <div className="nav-power">⏻</div>
@@ -1048,8 +1159,8 @@ export default function App() {
             <div className="profile-row">
               <div className="avatar-box">NH</div>
               <div>
-                <div className="profile-name">Nathan Hoang</div>
-                <div className="profile-sub">CSUF · Class of 2026 · GPA 3.8</div>
+                <div className={`profile-name typewriter ${nameDone ? "done" : ""}`}>{typedName}</div>
+                <div className="profile-sub">CSUF &middot; Class of 2026 &middot; GPA 3.8</div>
                 <div className="avail-row">
                   <div className="avail-dot" />
                   <div className="avail-txt">Available</div>
@@ -1066,8 +1177,9 @@ export default function App() {
             <div className="left-list">
               {list.map((item, i) => (
                 <div
-                  key={item.id}
-                  className={`list-item ${activeItem === i ? "active" : ""}`}
+                  key={`${listKey}-${item.id}`}
+                  className={`list-item list-item-anim ${activeItem === i ? "active" : ""}`}
+                  style={{ animationDelay: `${i * 55}ms` }}
                   onClick={() => setActiveItem(i)}
                 >
                   <div className="list-item-icon">{item.icon}</div>
