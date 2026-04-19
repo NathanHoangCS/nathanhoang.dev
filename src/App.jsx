@@ -5,7 +5,37 @@ const PROJECTS = [
   { id: 2, title: "ScroogeCoin", description: "A blockchain-based digital currency system with UTXO model, transaction validation, and Proof-of-Work mining built from scratch in Java.", tags: ["Java", "Cryptography", "Blockchain", "SHA-256"], github: "https://github.com", demo: null, featured: true },
   { id: 3, title: "FluxDB", description: "A time-series database engine with columnar storage, range queries, and a SQL-like query language compiled to bytecode.", tags: ["Rust", "LLVM", "SQL", "Databases"], github: "https://github.com", demo: null, featured: false },
   { id: 4, title: "Aperture", description: "Photo processing pipeline using WebAssembly for client-side RAW decoding, histogram equalization, and batch export.", tags: ["WebAssembly", "Rust", "React", "Canvas API"], github: "https://github.com", demo: "https://demo.com", featured: false },
-  { id: 5, title: "PlanWise", description: "Smart calendar that learns from scheduling habits using ML to suggest optimal meeting times and protect focus blocks.", tags: ["Python", "FastAPI", "React", "PostgreSQL", "ML"], github: "https://github.com/NathanHoangCS/PlanWise", demo: "https://demo.com", featured: false },
+  {
+    id: 5,
+    title: "PlanWise",
+    description: "A full-stack smart calendar app that learns your scheduling habits and uses AI to suggest optimal times, detect conflicts, and protect focus blocks.",
+    longDescription: "PlanWise is a full-stack web application built with React and Python/Flask. It starts with a blank slate — users complete a personalized onboarding flow, then build their calendar from scratch. As they add events, a custom pattern engine analyzes their habits and surfaces AI-powered suggestions using the Claude API.",
+    tags: ["React", "Python", "Flask", "SQLite", "Claude API", "JWT", "AI"],
+    techStack: {
+      Frontend: "React, CSS Variables, HTML5 Drag & Drop API",
+      Backend: "Python, Flask, SQLite, SQLAlchemy",
+      AI: "Anthropic Claude API — suggestions, conflict reasoning, NLP",
+      Auth: "JWT tokens, bcrypt password hashing",
+    },
+    features: [
+      { icon: "🔐", text: "Full user authentication — register, login, isolated data per user" },
+      { icon: "📅", text: "Month and week calendar views with drag & drop rescheduling" },
+      { icon: "🧠", text: "AI-powered suggestions based on real scheduling patterns" },
+      { icon: "⚡", text: 'Natural language event creation — type "study for exam Friday 2 hours"' },
+      { icon: "⚠️", text: "Conflict detection with AI reasoning — context-aware explanations" },
+      { icon: "🔔", text: "Pattern nudges — detects recurring habits and prompts you to re-add them" },
+      { icon: "🌙", text: "Dark / light mode with persistent preference" },
+      { icon: "💾", text: "Full event persistence to SQLite database" },
+    ],
+    dataStructures: [
+      { name: "HashMap", detail: "O(1) event lookup by ID" },
+      { name: "MinHeap", detail: "Priority queue for surfacing upcoming high-priority events" },
+      { name: "Pattern Engine", detail: "Analyzes scheduling history to detect recurring habits" },
+    ],
+    github: "https://github.com/NathanHoangCS/PlanWise",
+    demo: "https://demo.com",
+    featured: true,
+  },
 ];
 
 const SKILLS = {
@@ -561,9 +591,182 @@ const css = `
   }
 
   @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(4px)} }
+
+  /* ── PLANWISE SPOTLIGHT ── */
+  .pw-spotlight {
+    background: rgba(8,22,40,0.85);
+    border: 1px solid rgba(74,159,212,0.22);
+    border-top: 2px solid #4a9fd4;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+
+  .pw-spotlight-header {
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid rgba(74,159,212,0.1);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  }
+
+  .pw-eyebrow {
+    font-size: 9px; color: #4a9fd4;
+    letter-spacing: 0.26em; text-transform: uppercase; margin-bottom: 5px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .pw-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #4a9fd4; box-shadow: 0 0 6px #4a9fd4;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .pw-title {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 24px; color: #eef6ff; letter-spacing: 0.04em; margin-bottom: 4px;
+  }
+
+  .pw-short {
+    font-size: 12px; color: rgba(120,160,190,0.8); line-height: 1.6; max-width: 480px;
+  }
+
+  .pw-header-links { display: flex; gap: 8px; flex-shrink: 0; padding-top: 4px; }
+
+  .pw-body { padding: 0 20px 18px; }
+
+  .pw-long {
+    font-size: 13px; color: rgba(110,148,175,0.85);
+    line-height: 1.8; padding: 14px 0 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 16px;
+  }
+
+  .pw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+  .pw-section-label {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 10px; color: rgba(74,159,212,0.7);
+    letter-spacing: 0.22em; text-transform: uppercase;
+    margin-bottom: 10px; padding-bottom: 5px;
+    border-bottom: 1px solid rgba(74,159,212,0.1);
+  }
+
+  .pw-feature-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    margin-bottom: 7px;
+  }
+
+  .pw-feature-icon { font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+
+  .pw-feature-text {
+    font-size: 11px; color: rgba(120,158,185,0.85); line-height: 1.55;
+  }
+
+  .pw-stack-row { display: flex; flex-direction: column; gap: 6px; }
+
+  .pw-stack-item { display: flex; align-items: flex-start; gap: 8px; }
+
+  .pw-stack-key {
+    font-size: 9px; color: rgba(74,159,212,0.6);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    min-width: 52px; padding-top: 1px; flex-shrink: 0;
+  }
+
+  .pw-stack-val { font-size: 11px; color: rgba(110,148,175,0.8); line-height: 1.5; }
+
+  .pw-ds-row {
+    display: flex; gap: 8px; margin-bottom: 7px; align-items: flex-start;
+  }
+
+  .pw-ds-name {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 12px; color: rgba(160,200,230,0.9);
+    min-width: 120px; flex-shrink: 0;
+  }
+
+  .pw-ds-detail { font-size: 11px; color: rgba(100,140,168,0.75); line-height: 1.5; }
+
+  .pw-toggle {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 10px; color: rgba(74,159,212,0.6);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    cursor: pointer; padding: 8px 20px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    text-align: center; transition: color 0.12s, background 0.12s;
+  }
+
+  .pw-toggle:hover { color: rgba(74,159,212,0.9); background: rgba(74,159,212,0.04); }
+
+  .home-pw-card {
+    background: rgba(8,22,40,0.8);
+    border: 1px solid rgba(74,159,212,0.2);
+    border-top: 2px solid #4a9fd4;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
 `;
 
 // ── COMPONENTS ──────────────────────────────────────────────
+
+function PlanWiseSpotlight({ compact = false }) {
+  const pw = PROJECTS.find(p => p.id === 5);
+  const [expanded, setExpanded] = useState(!compact);
+  return (
+    <div className="pw-spotlight">
+      <div className="pw-spotlight-header">
+        <div style={{ flex: 1 }}>
+          <div className="pw-eyebrow"><div className="pw-dot" />Featured Project</div>
+          <div className="pw-title">{pw.title}</div>
+          <div className="pw-short">{pw.description}</div>
+          <div className="tag-row" style={{ marginTop: 10 }}>
+            {pw.tags.map(t => <span className="tag" key={t}>{t}</span>)}
+          </div>
+        </div>
+        <div className="pw-header-links">
+          <a className="btn" href={pw.github} target="_blank" rel="noreferrer">GitHub →</a>
+          <a className="btn" href={pw.demo} target="_blank" rel="noreferrer">Live Demo</a>
+        </div>
+      </div>
+
+      {expanded && (
+        <div className="pw-body">
+          <p className="pw-long">{pw.longDescription}</p>
+          <div className="pw-grid">
+            <div>
+              <div className="pw-section-label">Key Features</div>
+              {pw.features.map((f, i) => (
+                <div className="pw-feature-row" key={i}>
+                  <span className="pw-feature-icon">{f.icon}</span>
+                  <span className="pw-feature-text">{f.text}</span>
+                </div>
+              ))}
+            </div>
+            <div>
+              <div className="pw-section-label">Tech Stack</div>
+              <div className="pw-stack-row" style={{ marginBottom: 18 }}>
+                {Object.entries(pw.techStack).map(([k, v]) => (
+                  <div className="pw-stack-item" key={k}>
+                    <span className="pw-stack-key">{k}</span>
+                    <span className="pw-stack-val">{v}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="pw-section-label">Data Structures</div>
+              {pw.dataStructures.map((d, i) => (
+                <div className="pw-ds-row" key={i}>
+                  <span className="pw-ds-name">{d.name}</span>
+                  <span className="pw-ds-detail">{d.detail}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="pw-toggle" onClick={() => setExpanded(e => !e)}>
+        {expanded ? "▲ Show Less" : "▼ Show Full Details"}
+      </div>
+    </div>
+  );
+}
 
 function HomeContent() {
   return (
@@ -596,10 +799,12 @@ function HomeContent() {
       <div className="now-box">
         <div className="avail-dot" />
         <div>
-          <div className="now-label">Currently Building — Surge Live</div>
-          <div className="now-sub">Streak tracking · Live leaderboards · Node.js + REST API</div>
+          <div className="now-label">Spotlight — PlanWise</div>
+          <div className="now-sub">AI-Powered Calendar · React + Python/Flask + Claude API</div>
         </div>
       </div>
+
+      <PlanWiseSpotlight compact={true} />
 
       <div className="home-section-title">Open To</div>
       <p className="about-bio" style={{ marginBottom: 0 }}>
@@ -612,15 +817,20 @@ function HomeContent() {
 
 function ProjectsContent() {
   const [filter, setFilter] = useState("All");
-  const filters = ["All", "Featured", "Full-Stack", "Blockchain", "Systems"];
-  const filtered = filter === "All" ? PROJECTS
-    : filter === "Featured" ? PROJECTS.filter(p => p.featured)
-    : PROJECTS.filter(p => p.tags.some(t => t.toLowerCase().includes(filter.toLowerCase())));
+  const filters = ["All", "Featured", "Full-Stack", "Blockchain", "Systems", "AI"];
+  const otherProjects = PROJECTS.filter(p => p.id !== 5);
+  const filtered = filter === "All" ? otherProjects
+    : filter === "Featured" ? otherProjects.filter(p => p.featured)
+    : filter === "AI" ? [] // PlanWise shown in spotlight
+    : otherProjects.filter(p => p.tags.some(t => t.toLowerCase().includes(filter.toLowerCase())));
 
   return (
     <div className="fade">
+      <PlanWiseSpotlight compact={false} />
+
+      <div className="home-section-title" style={{ marginTop: 4 }}>Other Projects</div>
       <div style={{ display: "flex", gap: 4, marginBottom: 18 }}>
-        {filters.map(f => (
+        {filters.filter(f => f !== "AI").map(f => (
           <button key={f} className={`right-sub-tab ${filter === f ? "on" : ""}`} onClick={() => setFilter(f)}>{f}</button>
         ))}
       </div>
