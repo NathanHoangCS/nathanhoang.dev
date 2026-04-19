@@ -45,10 +45,6 @@ const SKILLS = {
   DevOps:    [{ name: "Docker / K8s", level: 75 }, { name: "AWS / GCP", level: 70 }, { name: "CI/CD (GH Actions)", level: 85 }, { name: "Linux / Bash", level: 60 }],
 };
 
-const BLOG_POSTS = [
-  { title: "Building Surge Live: Architecture Decisions", date: "Feb 2025", readTime: "6 min", excerpt: "How I designed a virtual prediction marketplace from scratch — modular backend, real-time leaderboards, and clean API contracts.", tags: ["Full-Stack", "Node.js", "Architecture"] },
-  { title: "UTXO vs Account Model: Lessons from ScroogeCoin", date: "Dec 2024", readTime: "8 min", excerpt: "Building a blockchain from scratch taught me more about distributed state than any textbook. Here's what I learned.", tags: ["Blockchain", "Java", "Cryptography"] },
-];
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Roboto+Condensed:wght@300;400;700&family=Open+Sans:wght@300;400;600&display=swap');
@@ -887,20 +883,59 @@ function SkillsContent() {
   );
 }
 
+const SH = ({ children }) => (
+  <div style={{
+    fontFamily: "'Rajdhani', sans-serif", fontWeight: 700,
+    fontSize: 15, color: "rgba(180,215,240,0.9)",
+    letterSpacing: "0.04em", marginBottom: 8, paddingBottom: 6,
+    borderBottom: "1px solid rgba(74,159,212,0.1)", marginTop: 20,
+  }}>{children}</div>
+);
+
+const SP = ({ children }) => (
+  <p className="blog-excerpt" style={{ marginBottom: 10 }}>{children}</p>
+);
+
 function WritingContent() {
   return (
     <div className="fade">
-      {BLOG_POSTS.map((p, i) => (
-        <div className="blog-entry" key={i}>
-          <div className="blog-date">{p.date} · {p.readTime} read</div>
-          <div className="blog-title">{p.title}</div>
-          <div className="tag-row">
-            {p.tags.map(t => <span className="tag" key={t}>{t}</span>)}
-          </div>
-          <p className="blog-excerpt">{p.excerpt}</p>
-          <div className="blog-more">Read More →</div>
+      <div className="blog-entry" style={{ paddingTop: 0, borderBottom: "none" }}>
+        <div className="blog-date">Apr 2025 &middot; ~8 min read</div>
+        <div className="blog-title">Building PlanWise: A Calendar That Actually Learns You</div>
+        <div className="tag-row" style={{ marginBottom: 20 }}>
+          {["Full-Stack","React","Python","AI"].map(t => <span className="tag" key={t}>{t}</span>)}
         </div>
-      ))}
+
+        <SP>Most calendar apps treat you like a blank slate every time you open them. You stare at an empty grid, manually type in every event, and the app just sits there. It does not notice that you always block Tuesday mornings for deep work. It does not care that you have scheduled back-to-back meetings every Friday for the past month. It just holds your data and does nothing with it.</SP>
+        <SP>That bothered me. So I built PlanWise &mdash; a full-stack calendar app that starts completely empty and learns your scheduling habits as you actually use it. The more you plan, the smarter it gets.</SP>
+
+        <SH>The idea behind it</SH>
+        <SP>The core concept was simple: what if your calendar could do what a good assistant does? Notice patterns. Flag conflicts before they happen. Suggest times based on when you are actually productive, not just when a slot is technically free.</SP>
+        <SP>To make that work, I needed three things to come together: a solid data layer that could efficiently query and analyze events, an AI layer that could reason about them in natural language, and a frontend fast enough to make drag-and-drop and real-time suggestions feel natural.</SP>
+
+        <SH>Starting with data structures</SH>
+        <SP>Before touching the AI, I had to make the backend fast. Every suggestion, every conflict check, every pattern nudge depends on reading and querying events efficiently. So I built two custom data structures instead of just hitting the database every time.</SP>
+        <SP>The first is an EventHashMap &mdash; keyed by event ID, giving O(1) average-case lookup. It also maintains a secondary date index so you can pull all events on a given day in O(k). Every write to the database also updates the map, so the two are always in sync.</SP>
+        <SP>The second is an EventMinHeap &mdash; a binary min-heap ordered by (datetime, priority). This powers the upcoming events panel and the AI suggestion engine. Instead of sorting the full event list every time, the heap gives you the next high-priority events in O(n log n) with O(log n) inserts. It uses lazy deletion with a tombstone set so removing events does not require rebuilding the whole structure.</SP>
+
+        <SH>The pattern engine</SH>
+        <SP>Once events start accumulating, the PatternEngine class runs over the full event history and extracts preferred days per event type, preferred hours, average duration, meetings per week, focus blocks per week, and overloaded days. Pure Python &mdash; no ML library, no external API. Just analysis over the HashMap and MinHeap.</SP>
+        <SP>The most interesting output is the nudge system. After you log three or more events, the engine detects recurring patterns and surfaces them as non-intrusive notifications. If you have been scheduling a deep work block every Monday at 10am, the next Monday you open the app you will see a prompt to add it again. One click and it is on the calendar.</SP>
+
+        <SH>Bringing in the Claude API</SH>
+        <SP>The pattern engine handles data analysis. The Claude API handles reasoning and language. There are three places it plugs in:</SP>
+        <SP><strong style={{color:"rgba(160,200,230,0.9)"}}>Personalized suggestions</strong> &mdash; the pattern engine builds a context object and sends it to Claude along with the user onboarding profile. Claude returns three specific, actionable suggestions based on real scheduling data, not generic tips.</SP>
+        <SP><strong style={{color:"rgba(160,200,230,0.9)"}}>Natural language event creation</strong> &mdash; type something like &quot;study for calc exam Friday 2 hours&quot; and Claude parses it into a structured event with title, type, date, start time, end time, and priority. The parsed result shows a confidence score before you confirm.</SP>
+        <SP><strong style={{color:"rgba(160,200,230,0.9)"}}>Conflict detection with reasoning</strong> &mdash; when you add an overlapping event, instead of just flagging a conflict, the app calls Claude with the context of both events. Claude returns a context-aware explanation and gives you three resolution options. It makes the app feel genuinely intelligent rather than just a rules engine.</SP>
+
+        <SH>Auth and persistence</SH>
+        <SP>Early versions stored everything in React state &mdash; events disappeared on refresh. I set up SQLite with SQLAlchemy for persistence, Flask-JWT-Extended for token-based auth, and bcrypt for password hashing. Every event is scoped to a user ID so data stays completely isolated.</SP>
+        <SP>One pattern I am proud of: optimistic UI updates on drag-and-drop. When you drag an event to a new time slot, the UI updates instantly while the PUT request fires in the background. If the save fails, the frontend reloads from the database to restore correct state. It makes the drag feel snappy even on slow connections.</SP>
+
+        <SH>What it taught me</SH>
+        <SP>Building PlanWise end-to-end &mdash; from data structures to database schema to AI integration to drag-and-drop UI &mdash; gave me a much clearer picture of how all those layers actually talk to each other in a real application. It is easy to understand each piece in isolation. It is harder to make them feel coherent together.</SP>
+        <SP>The most valuable lesson: AI features are only as good as the data you feed them. The Claude API is extremely capable, but the quality of the suggestions depends entirely on how well the pattern engine extracts signal from the event history. Getting the data layer right first made the AI layer much easier to build.</SP>
+      </div>
     </div>
   );
 }
@@ -957,7 +992,7 @@ const LEFT_LISTS = {
   Home: PROJECTS.slice(0, 5).map(p => ({ id: p.id, name: p.title, sub: p.tags[0] + " · " + p.tags[1], icon: p.title.slice(0,2).toUpperCase(), tag: p.featured ? "Featured" : null })),
   Projects: PROJECTS.map(p => ({ id: p.id, name: p.title, sub: p.tags.join(", "), icon: p.title.slice(0,2).toUpperCase(), tag: p.featured ? "Featured" : null })),
   Skills: Object.entries(SKILLS).map(([cat, skills], i) => ({ id: i, name: cat, sub: skills.map(s=>s.name).join(", "), icon: cat.slice(0,2).toUpperCase(), tag: skills.length + " skills" })),
-  Writing: BLOG_POSTS.map((p, i) => ({ id: i, name: p.title, sub: p.date + " · " + p.readTime + " read", icon: (i+1).toString().padStart(2,"0"), tag: null })),
+  Writing: [{ id: 0, name: "Building PlanWise: A Calendar That Actually Learns You", sub: "Apr 2025 · ~8 min read", icon: "01", tag: "New" }],
   Contact: [
     { id: 0, name: "Email", sub: "majesticnathan576@gmail.com", icon: "@", tag: null },
     { id: 1, name: "GitHub", sub: "NathanHoangCS", icon: "GH", tag: null },
