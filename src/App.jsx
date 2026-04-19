@@ -317,7 +317,124 @@ const css = `
   .right-body::-webkit-scrollbar { width: 4px; }
   .right-body::-webkit-scrollbar-thumb { background: rgba(50,70,110,0.30); }
 
-  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+  /* ── HOME FEATURED CARD ── */
+  .home-feat-card {
+    background: rgba(20,28,44,0.82);
+    border: 1px solid rgba(80,120,180,0.20);
+    border-top: 2px solid rgba(91,138,184,0.7);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .home-feat-card:hover { border-color: rgba(80,120,180,0.35); }
+
+  .home-feat-top {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 16px;
+    padding: 16px 18px 12px;
+  }
+
+  .home-feat-eyebrow {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 9px; color: rgba(91,138,184,0.75);
+    letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 5px;
+  }
+
+  .home-feat-title {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 20px; color: rgba(215,225,240,0.96);
+    letter-spacing: 0.05em; margin-bottom: 7px;
+  }
+
+  .home-feat-desc {
+    font-size: 12px; color: rgba(148,162,186,0.84);
+    line-height: 1.75; max-width: 460px;
+  }
+
+  .home-feat-links { display: flex; gap: 8px; flex-shrink: 0; padding-top: 2px; }
+
+  .home-feat-tags {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    padding: 0 18px 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.14);
+  }
+
+  .home-feat-footer {
+    padding: 9px 18px;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 11px; color: rgba(91,138,184,0.65);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer; transition: color 0.12s;
+  }
+
+  .home-feat-footer:hover { color: rgba(91,138,184,0.95); }
+
+  /* ── GITHUB STATS ── */
+  .gh-stats {
+    background: rgba(16,22,36,0.75);
+    border: 1px solid rgba(0,0,0,0.20);
+    margin-top: 16px; overflow: hidden;
+  }
+
+  .gh-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.16);
+    background: rgba(0,0,0,0.12);
+  }
+
+  .gh-header-label {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 11px; color: rgba(165,178,200,0.88);
+    letter-spacing: 0.16em; text-transform: uppercase; flex: 1;
+  }
+
+  .gh-header-link {
+    font-size: 10px; color: rgba(91,138,184,0.75);
+    text-decoration: none; letter-spacing: 0.1em;
+    transition: color 0.12s;
+  }
+
+  .gh-header-link:hover { color: rgba(91,138,184,1); }
+
+  .gh-grid {
+    display: flex; padding: 12px 14px; gap: 0;
+  }
+
+  .gh-stat {
+    flex: 1; text-align: center;
+    border-right: 1px solid rgba(0,0,0,0.14);
+  }
+
+  .gh-stat:last-child { border-right: none; }
+
+  .gh-stat-n {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 20px; color: rgba(200,212,232,0.92);
+    display: block; line-height: 1;
+  }
+
+  .gh-stat-l {
+    font-size: 9px; color: rgba(108,124,148,0.72);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    display: block; margin-top: 3px;
+  }
+
+  .gh-loading {
+    padding: 12px 14px;
+    font-size: 10px; color: rgba(108,124,148,0.65);
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+
+  /* ── FORM VALIDATION ── */
+  .f-err {
+    font-size: 10px; color: rgba(220,80,80,0.9);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin: -8px 0 10px; padding: 4px 0;
+  }
+
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
   .fade { animation: fadeIn 0.25s ease; }
 
   /* ── SCAN LINE SWEEP ── */
@@ -869,21 +986,44 @@ function HomeContent() {
         ))}
       </div>
 
-      <div className="now-box">
-        <div className="avail-dot" />
-        <div>
-          <div className="now-label">Spotlight — PlanWise</div>
-          <div className="now-sub">AI-Powered Calendar · React + Python/Flask + Claude API</div>
+      <div className="home-section-title">Featured Project</div>
+
+      <div className="home-feat-card">
+        <div className="home-feat-top">
+          <div>
+            <div className="home-feat-eyebrow">
+              <div className="avail-dot" style={{width:5,height:5}} />
+              AI &middot; Full-Stack
+            </div>
+            <div className="home-feat-title">PlanWise</div>
+            <div className="home-feat-desc">
+              A full-stack smart calendar that learns your scheduling habits and uses the Claude API
+              to suggest optimal times, detect conflicts with context-aware reasoning, and protect
+              focus blocks. Built with React, Python/Flask, SQLite, and JWT auth.
+            </div>
+          </div>
+          <div className="home-feat-links">
+            <a className="btn" href="https://github.com/NathanHoangCS/PlanWise" target="_blank" rel="noreferrer">GitHub</a>
+            <a className="btn" href="https://demo.com" target="_blank" rel="noreferrer">Demo</a>
+          </div>
+        </div>
+        <div className="home-feat-tags">
+          {["React","Python","Flask","SQLite","Claude API","JWT","AI"].map(t => (
+            <span className="tag" key={t}>{t}</span>
+          ))}
+        </div>
+        <div className="home-feat-footer" onClick={() => {}}>
+          Full case study &amp; architecture breakdown in Projects tab &rarr;
         </div>
       </div>
-
-      <PlanWiseSpotlight compact={true} />
 
       <div className="home-section-title">Open To</div>
       <p className="about-bio" style={{ marginBottom: 0 }}>
         Actively seeking internships and entry-level software engineering roles.
         Based in Fullerton, CA. Reach me at majesticnathan576@gmail.com or through the Contact tab.
       </p>
+
+      <GitHubStats />
     </div>
   );
 }
@@ -1019,12 +1159,22 @@ function WritingContent() {
 
 function ContactContent() {
   const [form, setForm] = useState({ name: "", email: "", msg: "" });
+  const [touched, setTouched] = useState({ name: false, email: false, msg: false });
   const [sent, setSent] = useState(false);
   const [error, setError] = useState(false);
   const [sending, setSending] = useState(false);
 
+  const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  const fieldError = {
+    name:  touched.name  && !form.name.trim()        ? "Name is required" : null,
+    email: touched.email && !isValidEmail(form.email) ? "Enter a valid email" : null,
+    msg:   touched.msg   && form.msg.trim().length < 10 ? "Message is too short" : null,
+  };
+  const isValid = form.name.trim() && isValidEmail(form.email) && form.msg.trim().length >= 10;
+
   const send = async () => {
-    if (!form.name || !form.email || !form.msg) return;
+    setTouched({ name: true, email: true, msg: true });
+    if (!isValid) return;
     setSending(true);
     setError(false);
     try {
@@ -1033,16 +1183,10 @@ function ContactContent() {
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ name: form.name, email: form.email, message: form.msg }),
       });
-      if (res.ok) {
-        setSent(true);
-      } else {
-        setError(true);
-      }
-    } catch {
-      setError(true);
-    } finally {
-      setSending(false);
-    }
+      if (res.ok) { setSent(true); }
+      else { setError(true); }
+    } catch { setError(true); }
+    finally { setSending(false); }
   };
 
   return (
@@ -1071,11 +1215,36 @@ function ContactContent() {
           </div>
           <div className="form-col">
             <label className="f-lbl">Name</label>
-            <input className="f-inp" placeholder="Your name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+            <input
+              className="f-inp"
+              placeholder="Your name"
+              value={form.name}
+              style={{ borderColor: fieldError.name ? "rgba(220,80,80,0.6)" : undefined }}
+              onChange={e => setForm({...form, name: e.target.value})}
+              onBlur={() => setTouched(t => ({...t, name: true}))}
+            />
+            {fieldError.name && <div className="f-err">{fieldError.name}</div>}
             <label className="f-lbl">Email</label>
-            <input className="f-inp" placeholder="your@email.com" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+            <input
+              className="f-inp"
+              placeholder="your@email.com"
+              value={form.email}
+              style={{ borderColor: fieldError.email ? "rgba(220,80,80,0.6)" : undefined }}
+              onChange={e => setForm({...form, email: e.target.value})}
+              onBlur={() => setTouched(t => ({...t, email: true}))}
+            />
+            {fieldError.email && <div className="f-err">{fieldError.email}</div>}
             <label className="f-lbl">Message</label>
-            <textarea className="f-inp" rows={5} placeholder="What's on your mind..." style={{ resize:"none" }} value={form.msg} onChange={e => setForm({...form, msg: e.target.value})} />
+            <textarea
+              className="f-inp"
+              rows={5}
+              placeholder="What's on your mind..."
+              style={{ resize:"none", borderColor: fieldError.msg ? "rgba(220,80,80,0.6)" : undefined }}
+              value={form.msg}
+              onChange={e => setForm({...form, msg: e.target.value})}
+              onBlur={() => setTouched(t => ({...t, msg: true}))}
+            />
+            {fieldError.msg && <div className="f-err">{fieldError.msg}</div>}
             {error && (
                 <div style={{ fontSize: 11, color: "rgba(220,80,80,0.9)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10, padding: "8px 10px", background: "rgba(180,40,40,0.12)", border: "1px solid rgba(180,40,40,0.25)" }}>
                   Something went wrong. Please try again.
@@ -1108,6 +1277,46 @@ const LEFT_LISTS = {
 };
 
 const LEFT_TITLES = { Home: "Projects", Projects: "All Projects", Skills: "Categories", Writing: "Articles", Contact: "Links" };
+
+function GitHubStats() {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://api.github.com/users/NathanHoangCS")
+      .then(r => r.json())
+      .then(d => { setStats(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  return (
+    <div className="gh-stats">
+      <div className="gh-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{color:"rgba(140,165,200,0.7)",flexShrink:0}}>
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        <span className="gh-header-label">GitHub</span>
+        <a href="https://github.com/NathanHoangCS" target="_blank" rel="noreferrer" className="gh-header-link">NathanHoangCS &rarr;</a>
+      </div>
+      {loading ? (
+        <div className="gh-loading">Loading stats...</div>
+      ) : stats ? (
+        <div className="gh-grid">
+          {[
+            ["Public Repos",  stats.public_repos],
+            ["Followers",     stats.followers],
+            ["Following",     stats.following],
+          ].map(([l, v]) => (
+            <div className="gh-stat" key={l}>
+              <span className="gh-stat-n">{v ?? "—"}</span>
+              <span className="gh-stat-l">{l}</span>
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 function useTypewriter(text, speed = 55, startDelay = 900) {
   const [displayed, setDisplayed] = useState("");
