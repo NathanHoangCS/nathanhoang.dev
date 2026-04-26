@@ -1,1421 +1,1466 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
 const PROJECTS = [
-  { id: 1, title: "Surge Live", description: "Full-stack virtual prediction marketplace using virtual currency. Users place picks on live and upcoming events, track accuracy and streaks, and compete on dynamic leaderboards.", tags: ["Full-Stack", "JavaScript", "Node.js", "REST API"], github: "https://github.com/NathanHoangCS/Surge-Live", demo: "https://demo.com", featured: true },
-  { id: 2, title: "ScroogeCoin", description: "A blockchain-based digital currency system with UTXO model, transaction validation, and Proof-of-Work mining built from scratch in Java.", tags: ["Java", "Cryptography", "Blockchain", "SHA-256"], github: "https://github.com", demo: null, featured: true },
-  { id: 3, title: "FluxDB", description: "A time-series database engine with columnar storage, range queries, and a SQL-like query language compiled to bytecode.", tags: ["Rust", "LLVM", "SQL", "Databases"], github: "https://github.com", demo: null, featured: false },
-  { id: 4, title: "Aperture", description: "Photo processing pipeline using WebAssembly for client-side RAW decoding, histogram equalization, and batch export.", tags: ["WebAssembly", "Rust", "React", "Canvas API"], github: "https://github.com", demo: "https://demo.com", featured: false },
   {
-    id: 5,
-    title: "PlanWise",
-    description: "A full-stack smart calendar app that learns your scheduling habits and uses AI to suggest optimal times, detect conflicts, and protect focus blocks.",
-    longDescription: "PlanWise is a full-stack web application built with React and Python/Flask. It starts with a blank slate — users complete a personalized onboarding flow, then build their calendar from scratch. As they add events, a custom pattern engine analyzes their habits and surfaces AI-powered suggestions using the Claude API.",
-    tags: ["React", "Python", "Flask", "SQLite", "Claude API", "JWT", "AI"],
-    techStack: {
-      Frontend: "React, CSS Variables, HTML5 Drag & Drop API",
-      Backend: "Python, Flask, SQLite, SQLAlchemy",
-      AI: "Anthropic Claude API — suggestions, conflict reasoning, NLP",
-      Auth: "JWT tokens, bcrypt password hashing",
+    id: 1,
+    slug: "surge-live",
+    title: "Surge Live",
+    company: "Personal Project",
+    year: "2024",
+    tagline: "Building a real-time prediction marketplace from the ground up.",
+    description: "Full-stack virtual prediction marketplace using virtual currency. Users place picks on live and upcoming events, track accuracy and streaks, and compete on dynamic leaderboards.",
+    longDesc: "Surge Live is a full-stack web application that simulates a sports and esports prediction marketplace using virtual currency. The platform allows users to place picks on live and upcoming events, track performance metrics such as accuracy and streaks, and compete on dynamic leaderboards.",
+    tags: ["Full-Stack", "JavaScript", "Node.js", "REST API"],
+    color: "#e8f0fe",
+    accent: "#1a56db",
+    github: "https://github.com/NathanHoangCS/Surge-Live",
+    demo: "https://demo.com",
+    featured: true,
+    case: {
+      problem: "Many prediction platforms focus on short-term engagement and real-money incentives, limiting accessibility and long-term skill development.",
+      solution: "Built a full-stack virtual prediction platform using a modular architecture, performance tracking engine, and a scalable leaderboard system powered by REST APIs.",
+      architecture: "Frontend: HTML/CSS/JS. Backend: Node.js + Express with relational database for user data, predictions, and virtual currency state.",
+      lessons: "Managing consistent virtual currency updates, concurrent leaderboard calculations, and designing clean API contracts.",
     },
-    features: [
-      { icon: "🔐", text: "Full user authentication — register, login, isolated data per user" },
-      { icon: "📅", text: "Month and week calendar views with drag & drop rescheduling" },
-      { icon: "🧠", text: "AI-powered suggestions based on real scheduling patterns" },
-      { icon: "⚡", text: 'Natural language event creation — type "study for exam Friday 2 hours"' },
-      { icon: "⚠️", text: "Conflict detection with AI reasoning — context-aware explanations" },
-      { icon: "🔔", text: "Pattern nudges — detects recurring habits and prompts you to re-add them" },
-      { icon: "🌙", text: "Dark / light mode with persistent preference" },
-      { icon: "💾", text: "Full event persistence to SQLite database" },
-    ],
-    dataStructures: [
-      { name: "HashMap", detail: "O(1) event lookup by ID" },
-      { name: "MinHeap", detail: "Priority queue for surfacing upcoming high-priority events" },
-      { name: "Pattern Engine", detail: "Analyzes scheduling history to detect recurring habits" },
-    ],
+  },
+  {
+    id: 2,
+    slug: "planwise",
+    title: "PlanWise",
+    company: "Personal Project",
+    year: "2025",
+    tagline: "A calendar that learns you and thinks ahead.",
+    description: "Full-stack smart calendar app that learns your scheduling habits and uses the Claude API to suggest optimal times, detect conflicts, and protect focus blocks.",
+    longDesc: "PlanWise is a full-stack web application built with React and Python/Flask. It starts with a blank slate — users complete a personalized onboarding flow, then build their calendar from scratch. As they add events, a custom pattern engine analyzes their habits and surfaces AI-powered suggestions using the Claude API.",
+    tags: ["React", "Python", "Flask", "Claude API", "SQLite", "JWT"],
+    color: "#f0fdf4",
+    accent: "#16a34a",
     github: "https://github.com/NathanHoangCS/PlanWise",
     demo: "https://demo.com",
     featured: true,
+    case: {
+      problem: "Most calendar apps treat you like a blank slate. They hold your data and do nothing with it.",
+      solution: "Built a pattern engine in pure Python that analyzes scheduling history across a custom HashMap and MinHeap, then surfaces AI-powered suggestions via the Claude API.",
+      architecture: "React frontend with drag-and-drop. Python/Flask backend. SQLite + SQLAlchemy. JWT auth. EventHashMap for O(1) lookup. EventMinHeap for priority scheduling.",
+      lessons: "AI features are only as good as the data you feed them. Getting the data layer right first made the AI layer much easier to build.",
+    },
+    techStack: {
+      Frontend: "React, CSS Variables, HTML5 Drag & Drop API",
+      Backend: "Python, Flask, SQLite, SQLAlchemy",
+      AI: "Anthropic Claude API",
+      Auth: "JWT tokens, bcrypt",
+    },
+    features: [
+      { icon: "🔐", text: "Full authentication — register, login, isolated data per user" },
+      { icon: "📅", text: "Month and week views with drag & drop rescheduling" },
+      { icon: "🧠", text: "AI-powered suggestions based on real scheduling patterns" },
+      { icon: "⚡", text: "Natural language event creation" },
+      { icon: "⚠️", text: "Conflict detection with AI reasoning" },
+      { icon: "🔔", text: "Pattern nudges for recurring habits" },
+    ],
+  },
+  {
+    id: 3,
+    slug: "scroogecoin",
+    title: "ScroogeCoin",
+    company: "Academic Project",
+    year: "2024",
+    tagline: "A blockchain built from first principles.",
+    description: "Blockchain-based digital currency system with UTXO model, transaction validation, and Proof-of-Work mining implementation built from scratch in Java.",
+    longDesc: "Understanding blockchain at the protocol level requires building one from scratch. This project implements a full UTXO model, digital signatures, P2P mempool simulation, and a simplified PoW miner in Java using built-in crypto libraries.",
+    tags: ["Java", "Cryptography", "Blockchain", "SHA-256"],
+    color: "#fff7ed",
+    accent: "#ea580c",
+    github: "https://github.com",
+    demo: null,
+    featured: true,
+    case: {
+      problem: "Understanding blockchain at the protocol level requires building one from scratch.",
+      solution: "Implemented full UTXO model, digital signatures, P2P mempool simulation, and a simplified PoW miner.",
+      architecture: "Java with built-in crypto libs. Block = header + Merkle tree of transactions. Nodes validate and gossip via simulated network.",
+      lessons: "The elegance of UTXO vs account models. Why coinbase transactions are special-cased.",
+    },
+  },
+  {
+    id: 4,
+    slug: "fluxdb",
+    title: "FluxDB",
+    company: "Personal Project",
+    year: "2024",
+    tagline: "A time-series database engine with a custom query language.",
+    description: "Time-series database engine with columnar storage, range queries, and a SQL-like query language compiled to bytecode.",
+    longDesc: "FluxDB is a custom-built time-series database engine featuring columnar storage for efficient range queries and a SQL-like query language that compiles to bytecode for fast execution.",
+    tags: ["Rust", "LLVM", "SQL", "Databases"],
+    color: "#fdf4ff",
+    accent: "#9333ea",
+    github: "https://github.com",
+    demo: null,
+    featured: false,
+    case: null,
+  },
+  {
+    id: 5,
+    slug: "aperture",
+    title: "Aperture",
+    company: "Personal Project",
+    year: "2024",
+    tagline: "RAW photo processing at native speed in the browser.",
+    description: "Photo processing pipeline using WebAssembly for client-side RAW decoding, histogram equalization, and batch export.",
+    longDesc: "Aperture is a client-side photo processing pipeline that leverages WebAssembly to bring near-native performance to RAW image decoding, histogram equalization, and batch export directly in the browser.",
+    tags: ["WebAssembly", "Rust", "React", "Canvas API"],
+    color: "#f8fafc",
+    accent: "#0f172a",
+    github: "https://github.com",
+    demo: "https://demo.com",
+    featured: false,
+    case: null,
   },
 ];
 
 const SKILLS = {
-  Frontend:  [{ name: "React / Next.js", level: 95 }, { name: "TypeScript", level: 90 }, { name: "TailwindCSS", level: 85 }, { name: "JavaScript", level: 92 }],
-  Backend:   [{ name: "Node.js / Express", level: 93 }, { name: "Python / FastAPI", level: 88 }, { name: "Java / Spring", level: 80 }, { name: "REST APIs", level: 90 }],
-  Databases: [{ name: "PostgreSQL", level: 88 }, { name: "MongoDB", level: 82 }, { name: "Redis", level: 70 }],
-  DevOps:    [{ name: "Docker / K8s", level: 75 }, { name: "AWS / GCP", level: 70 }, { name: "CI/CD (GH Actions)", level: 85 }, { name: "Linux / Bash", level: 60 }],
+  Frontend: [
+    { name: "React / Next.js", level: 95 },
+    { name: "TypeScript", level: 90 },
+    { name: "JavaScript", level: 92 },
+    { name: "TailwindCSS", level: 85 },
+  ],
+  Backend: [
+    { name: "Node.js / Express", level: 93 },
+    { name: "Python / Flask", level: 88 },
+    { name: "Java / Spring", level: 80 },
+    { name: "REST APIs", level: 90 },
+  ],
+  Databases: [
+    { name: "PostgreSQL", level: 88 },
+    { name: "MongoDB", level: 82 },
+    { name: "SQLite", level: 85 },
+    { name: "Redis", level: 70 },
+  ],
+  "DevOps & Tools": [
+    { name: "Docker / K8s", level: 75 },
+    { name: "AWS / GCP", level: 70 },
+    { name: "CI/CD", level: 85 },
+    { name: "Linux / Bash", level: 60 },
+  ],
 };
 
-
+// ─────────────────────────────────────────────
+// STYLES
+// ─────────────────────────────────────────────
 const css = `
-  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Roboto+Condensed:wght@300;400;700&family=Open+Sans:wght@300;400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Editorial+New:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body, #root { width: 100%; height: 100%; overflow: hidden; }
 
-  /* ── BACKGROUND ── */
-  .app {
-    width: 100vw; height: 100vh;
-    display: flex; flex-direction: column;
-    font-family: 'Open Sans', sans-serif;
-    position: relative; overflow: hidden;
-    background: #4a5568;
+  :root {
+    --bg: #0f0e0c;
+    --bg2: #161410;
+    --bg3: #1c1a15;
+    --ink: #f0ece4;
+    --ink2: #a89f8c;
+    --ink3: #5c5648;
+    --line: rgba(240,236,228,0.08);
+    --line2: rgba(240,236,228,0.05);
+    --glow: rgba(255,210,140,0.06);
+    --glow-strong: rgba(255,200,120,0.10);
+    --accent: #f0ece4;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+    --radius: 4px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Soldier silhouette bg using CSS — dark blue-grey gradient with subtle figure suggestion */
-  .bg-layer {
-    position: absolute; inset: 0; z-index: 0;
-    background:
-      radial-gradient(ellipse at 50% 50%, rgba(40,55,80,0.4) 0%, transparent 65%),
-      radial-gradient(ellipse at 80% 80%, rgba(25,35,55,0.35) 0%, transparent 55%),
-      linear-gradient(180deg, #4e5c70 0%, #3c4a5e 40%, #2e3a4e 100%);
+  html {
+    background: var(--bg);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .bg-layer::after {
+  body, #root {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* warm lamp light — fixed so it follows the viewport like a light source */
+  body::before {
     content: '';
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
-    background-size: 52px 52px;
+    position: fixed;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(
+      ellipse at 50% 20%,
+      rgba(255,200,100,0.10) 0%,
+      rgba(255,170,60,0.06) 25%,
+      rgba(200,130,40,0.03) 50%,
+      transparent 75%
+    );
     pointer-events: none;
+    z-index: 0;
   }
 
-  /* ── TOP NAV ── */
-  .topnav {
-    height: 48px; flex-shrink: 0;
-    position: relative; z-index: 20;
-    display: flex; align-items: stretch;
-    background: rgba(22,20,10,0.88);
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid rgba(74,159,212,0.10);
-  }
-
-  .nav-home {
-    width: 64px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    border-right: 1px solid rgba(80,120,180,0.09);
-    cursor: pointer; transition: background 0.15s;
-    background: rgba(50,70,110,0.30);
-  }
-
-  .nav-home svg { width: 22px; height: 22px; fill: #6a9ac8; }
-  .nav-home:hover { background: rgba(80,120,180,0.20); }
-
-  .nav-tabs { display: flex; flex: 1; }
-
-  .nav-tab {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: rgba(168,180,200,0.65); cursor: pointer;
-    border-right: 1px solid rgba(80,120,180,0.05);
-    transition: color 0.15s, background 0.15s;
-    user-select: none; position: relative; overflow: hidden;
-  }
-
-  .nav-tab:hover { color: rgba(215,225,240,0.92); background: rgba(50,65,95,0.25); }
-
-  .nav-tab.on {
-    color: #ffffff;
-    background: rgba(80,120,180,0.07);
-  }
-
-  .nav-tab.on::after {
+  /* secondary fill light — slight warm tint lower center */
+  body::after {
     content: '';
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 2px; background: #6a9ac8;
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 500px;
+    background: radial-gradient(
+      ellipse at 50% 100%,
+      rgba(200,140,60,0.04) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
   }
 
-  .nav-power {
-    width: 56px; flex-shrink: 0;
+  /* all direct children of root sit above the light layers */
+  nav, section, footer, .loading-screen, .modal-overlay { position: relative; z-index: 1; }
+
+  ::selection { background: var(--ink); color: var(--bg); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--ink3); border-radius: 3px; }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px;
+    height: 60px;
+    background: rgba(15,14,12,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+
+  .nav.scrolled { border-bottom-color: var(--line); }
+
+  .nav-name {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 32px;
+  }
+
+  .nav-link {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink2);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: color 0.2s;
+    background: none; border: none;
+    font-family: var(--sans);
+  }
+
+  .nav-link:hover { color: var(--ink); }
+
+  .nav-link.ext {
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .nav-link.ext::after {
+    content: '↗';
+    font-size: 11px;
+    opacity: 0.5;
+  }
+
+  /* ── LOADING ── */
+  .loading-screen {
+    position: fixed; inset: 0; z-index: 200;
+    background: radial-gradient(ellipse at 50% 40%, #1a1510 0%, #0a0906 100%);
     display: flex; align-items: center; justify-content: center;
-    border-left: 1px solid rgba(80,120,180,0.09);
-    cursor: pointer; transition: background 0.15s;
-    font-size: 18px; color: rgba(150,170,190,0.4);
+    transition: opacity 0.6s var(--ease), visibility 0.6s;
   }
 
-  .nav-power:hover { background: rgba(180,40,40,0.12); color: #e05050; }
+  .loading-screen.out { opacity: 0; visibility: hidden; }
 
-  /* ── BODY ── */
-  .body {
-    flex: 1; display: flex;
-    padding: 24px 28px 20px;
-    gap: 16px; overflow: hidden;
-    position: relative; z-index: 10;
+  .loading-dots {
+    display: flex; gap: 8px; align-items: center;
   }
 
-  /* ── LEFT PANEL ── */
-  .left {
-    width: 300px; flex-shrink: 0;
-    display: flex; flex-direction: column;
-    gap: 0;
-    background: rgba(26,32,46,0.90);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(74,159,212,0.10);
-    overflow: hidden;
-  }
-
-  /* profile row */
-  .profile-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px 16px;
-    background: rgba(15,20,32,0.55);
-    border-bottom: 1px solid rgba(80,120,180,0.09);
-    flex-shrink: 0;
-  }
-
-  .avatar-box {
-    width: 52px; height: 52px; flex-shrink: 0;
-    background: linear-gradient(135deg, #2a3c54, #1a2c44);
-    border: 2px solid rgba(74,159,212,0.30);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 17px; color: #6a9ac8;
-  }
-
-  .profile-name {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 17px; color: #dde4f0; letter-spacing: 0.04em; min-height: 22px; display: inline-block; max-width: 160px;
-  }
-
-  .profile-sub {
-    font-size: 11px; color: rgba(120,160,190,0.6);
-    letter-spacing: 0.08em; margin-top: 2px;
-  }
-
-  .avail-row {
-    display: flex; align-items: center; gap: 5px;
-    margin-top: 4px;
-  }
-
-  .avail-dot {
+  .loading-dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: #40c870; box-shadow: 0 0 5px #40c870;
-    animation: pulse 2s ease-in-out infinite; flex-shrink: 0;
+    background: rgba(255,200,120,0.9);
+    animation: dotPulse 1.2s ease-in-out infinite;
   }
 
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
 
-  .avail-txt {
-    font-size: 10px; color: rgba(64,200,112,0.8);
-    letter-spacing: 0.1em; text-transform: uppercase;
+  @keyframes dotPulse {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
   }
 
-  .sidebar-linkedin {
-    display: inline-flex; align-items: center; gap: 5px;
-    margin-top: 7px;
-    font-size: 10px; color: rgba(91,138,184,0.75);
-    text-decoration: none; letter-spacing: 0.04em;
-    transition: color 0.15s;
-  }
-
-  .sidebar-linkedin:hover { color: rgba(91,138,184,1); }
-
-  /* left list heading */
-  .list-head {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 16px 8px;
-    border-bottom: 1px solid rgba(80,120,180,0.07);
-    flex-shrink: 0;
-  }
-
-  .list-head-title {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 14px; color: rgba(195,206,222,0.85);
-    letter-spacing: 0.1em; text-transform: uppercase;
-  }
-
-  .list-head-count {
-    font-size: 11px; color: rgba(108,124,148,0.65);
-    letter-spacing: 0.06em;
-  }
-
-  /* scrollable list */
-  .left-list {
-    flex: 1; overflow-y: auto;
-    scrollbar-width: thin; scrollbar-color: rgba(80,120,180,0.09) transparent;
-  }
-
-  .left-list::-webkit-scrollbar { width: 3px; }
-  .left-list::-webkit-scrollbar-thumb { background: rgba(50,70,110,0.30); }
-
-  .list-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 16px;
-    border-bottom: 1px solid rgba(80,120,180,0.05);
-    cursor: pointer; transition: background 0.12s;
-  }
-
-  .list-item:hover { background: rgba(74,159,212,0.07); }
-  .list-item.active { background: rgba(50,70,110,0.30); }
-
-  .list-item-icon {
-    width: 36px; height: 36px; flex-shrink: 0;
-    background: rgba(20,35,52,0.8);
-    border: 1px solid rgba(80,120,180,0.14);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 11px; color: rgba(74,159,212,0.60);
-    letter-spacing: 0.02em;
-  }
-
-  .list-item-info { flex: 1; overflow: hidden; }
-
-  .list-item-name {
-    font-family: 'Rajdhani', sans-serif; font-weight: 600;
-    font-size: 13px; color: rgba(200,210,228,0.90);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    letter-spacing: 0.02em;
-  }
-
-  .list-item-sub {
-    font-size: 10px; color: rgba(128,144,168,0.72);
-    letter-spacing: 0.04em; margin-top: 1px;
-  }
-
-  .list-item-tag {
-    font-size: 9px; color: rgba(74,159,212,0.50);
-    letter-spacing: 0.06em; text-transform: uppercase;
-    border: 1px solid rgba(80,120,180,0.20);
-    padding: 1px 5px; flex-shrink: 0;
-    background: rgba(80,120,180,0.05);
-  }
-
-  /* ── RIGHT PANEL ── */
-  .right {
-    flex: 1;
-    background: rgba(26,32,46,0.90);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(74,159,212,0.10);
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
     display: flex; flex-direction: column;
-    overflow: hidden;
+    justify-content: flex-end;
+    padding: 0 40px 60px;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
   }
 
-  .right-header {
-    padding: 14px 22px 12px;
-    border-bottom: 1px solid rgba(80,120,180,0.09);
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-
-  .right-title {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 20px; color: rgba(235,220,160,0.95);
-    letter-spacing: 0.06em;
-  }
-
-  .right-sub-tabs {
-    display: flex; gap: 2px;
-  }
-
-  .right-sub-tab {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: rgba(108,124,148,0.65); padding: 4px 12px;
-    border: 1px solid rgba(80,120,180,0.09);
-    cursor: pointer; transition: all 0.12s;
-  }
-
-  .right-sub-tab:hover { color: rgba(180,210,230,0.9); border-color: rgba(80,120,180,0.14); }
-  .right-sub-tab.on { color: #fff; background: rgba(50,70,110,0.30); border-color: rgba(80,120,180,0.27); }
-
-  .right-body {
-    flex: 1; overflow-y: auto; padding: 22px 26px;
-    scrollbar-width: thin; scrollbar-color: rgba(80,120,180,0.09) transparent;
-  }
-
-  .right-body::-webkit-scrollbar { width: 4px; }
-  .right-body::-webkit-scrollbar-thumb { background: rgba(50,70,110,0.30); }
-
-  /* ── HOME FEATURED CARD ── */
-  .home-feat-card {
-    background: rgba(20,28,44,0.82);
-    border: 1px solid rgba(80,120,180,0.20);
-    border-top: 2px solid rgba(91,138,184,0.7);
-    margin-bottom: 20px;
-    overflow: hidden;
-    transition: border-color 0.15s;
-  }
-
-  .home-feat-card:hover { border-color: rgba(80,120,180,0.35); }
-
-  .home-feat-top {
-    display: flex; align-items: flex-start;
-    justify-content: space-between; gap: 16px;
-    padding: 16px 18px 12px;
-  }
-
-  .home-feat-eyebrow {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 9px; color: rgba(91,138,184,0.75);
-    letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 5px;
-  }
-
-  .home-feat-title {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 20px; color: rgba(215,225,240,0.96);
-    letter-spacing: 0.05em; margin-bottom: 7px;
-  }
-
-  .home-feat-desc {
-    font-size: 12px; color: rgba(148,162,186,0.84);
-    line-height: 1.75; max-width: 460px;
-  }
-
-  .home-feat-links { display: flex; gap: 8px; flex-shrink: 0; padding-top: 2px; }
-
-  .home-feat-tags {
-    display: flex; flex-wrap: wrap; gap: 5px;
-    padding: 0 18px 12px;
-    border-bottom: 1px solid rgba(0,0,0,0.14);
-  }
-
-  .home-feat-footer {
-    padding: 9px 18px;
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 11px; color: rgba(91,138,184,0.65);
-    letter-spacing: 0.12em; text-transform: uppercase;
-    cursor: pointer; transition: color 0.12s;
-  }
-
-  .home-feat-footer:hover { color: rgba(91,138,184,0.95); }
-
-  /* ── LOOKING FOR STRIP ── */
-  .looking-for {
-    background: rgba(16,24,40,0.75);
-    border: 1px solid rgba(0,0,0,0.20);
-    border-left: 3px solid rgba(91,138,184,0.6);
-    margin-top: 18px;
-    overflow: hidden;
-  }
-
-  .lf-row {
-    display: flex; flex-direction: column;
-  }
-
-  .lf-item {
-    display: flex; align-items: baseline; gap: 10px;
-    padding: 9px 16px;
-    border-bottom: 1px solid rgba(0,0,0,0.12);
-  }
-
-  .lf-item:last-child { border-bottom: none; }
-
-  .lf-label {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 9px; color: rgba(91,138,184,0.65);
-    letter-spacing: 0.22em; text-transform: uppercase;
-    min-width: 120px; flex-shrink: 0;
-  }
-
-  .lf-value {
-    font-size: 12px; color: rgba(185,196,215,0.88);
-    display: flex; align-items: center;
-  }
-
-  /* ── FORM VALIDATION ── */
-  .f-err {
-    font-size: 10px; color: rgba(220,80,80,0.9);
-    letter-spacing: 0.1em; text-transform: uppercase;
-    margin: -8px 0 10px; padding: 4px 0;
-  }
-
-    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-  .fade { animation: fadeIn 0.25s ease; }
-
-  /* ── SCAN LINE SWEEP ── */
-  .scanline-sweep {
-    position: fixed; inset: 0; z-index: 9999;
+  /* lamp glow on hero — sits behind all content */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -10%; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 700px;
+    background: radial-gradient(
+      ellipse at 50% 10%,
+      rgba(255,190,80,0.09) 0%,
+      rgba(255,160,50,0.05) 30%,
+      transparent 65%
+    );
     pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ensure hero content sits above glow */
+  .hero-scroll-hint,
+  .hero-eyebrow,
+  .hero-headline,
+  .hero-bottom { position: relative; z-index: 1; }
+
+  .hero-scroll-hint {
+    position: absolute; top: 50%; right: 40px;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0; animation: fadeIn 0.8s var(--ease) 1.8s forwards;
+  }
+
+  .hero-scroll-label {
+    font-size: 10px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.15em;
+    text-transform: uppercase;
+    writing-mode: vertical-lr;
+  }
+
+  .hero-scroll-line {
+    width: 1px; height: 60px;
+    background: var(--ink3);
+    transform-origin: top;
+    animation: lineGrow 1s var(--ease) 2.2s both, lineScroll 2s ease-in-out 3.2s infinite;
+  }
+
+  @keyframes lineGrow { from { scaleY: 0; } to { scaleY: 1; } }
+  @keyframes lineScroll {
+    0% { transform: scaleY(1) translateY(0); }
+    50% { transform: scaleY(0.5) translateY(30px); }
+    100% { transform: scaleY(1) translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-size: 12px; font-weight: 400;
+    color: var(--ink3); letter-spacing: 0.08em;
+    margin-bottom: 24px;
+    opacity: 0; animation: slideUp 0.8s var(--ease) 0.6s forwards;
+  }
+
+  .hero-headline {
+    font-family: var(--serif);
+    font-size: clamp(52px, 7vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 40px;
+    max-width: 900px;
+    opacity: 0; animation: slideUp 0.8s var(--ease) 0.8s forwards;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--ink2);
+  }
+
+  .hero-bottom {
+    display: flex; align-items: flex-end;
+    justify-content: space-between;
+    opacity: 0; animation: slideUp 0.8s var(--ease) 1s forwards;
+  }
+
+  .hero-bio {
+    font-size: 15px; font-weight: 300;
+    color: var(--ink2); line-height: 1.7;
+    max-width: 400px;
+  }
+
+  .hero-bio strong { font-weight: 500; color: var(--ink); }
+
+  .hero-status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--ink3);
+    letter-spacing: 0.04em;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+    animation: statusPulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes statusPulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(34,197,94,0.08); }
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 11px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 40px 40px 0;
+    margin-bottom: 0;
+  }
+
+  /* ── PROJECT LIST ── */
+  .projects-section { padding-bottom: 0; }
+
+  .project-row {
+    display: block;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .project-row:hover { background: rgba(255,180,60,0.03); }
+
+  .project-row-inner {
+    display: flex; align-items: baseline;
+    justify-content: space-between;
+    padding: 28px 0 0;
+    gap: 24px;
+  }
+
+  .project-row-left {
+    display: flex; align-items: baseline; gap: 20px;
+    flex: 1; min-width: 0;
+  }
+
+  .project-num {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--ink3);
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .project-title-row {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 52px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    transition: transform 0.3s var(--ease);
+  }
+
+  .project-row:hover .project-title-row {
+    transform: translateX(6px);
+  }
+
+  .project-row-meta {
+    font-size: 13px; font-weight: 300;
+    color: var(--ink3);
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .project-arrow {
+    font-size: 18px;
+    color: var(--ink3);
+    transition: transform 0.3s var(--ease), color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .project-row:hover .project-arrow {
+    transform: translate(4px, -4px);
+    color: var(--ink);
+  }
+
+  .project-tagline {
+    font-size: 13px; font-weight: 300;
+    color: var(--ink2); line-height: 1.5;
+    padding: 10px 0 0 31px;
+    max-width: 560px;
+  }
+
+  /* project image strip */
+  .project-img-strip {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s var(--ease);
+    margin-top: 0;
+  }
+
+  .project-row:hover .project-img-strip {
+    height: 200px;
+  }
+
+  .project-img-placeholder {
+    width: 100%;
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    margin-left: 31px;
+    width: calc(100% - 31px);
+    border-radius: var(--radius);
+    position: relative;
     overflow: hidden;
   }
 
-  .scanline-sweep::before {
-    content: '';
-    position: absolute; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent 0%, rgba(140,180,230,0.9) 30%, rgba(180,210,255,1) 50%, rgba(140,180,230,0.9) 70%, transparent 100%);
-    box-shadow: 0 0 18px 4px rgba(140,180,230,0.5), 0 0 40px 8px rgba(100,150,220,0.2);
-    animation: sweepDown 1.1s cubic-bezier(0.4,0,0.6,1) forwards;
-    top: -4px;
-  }
-
-  .scanline-sweep::after {
-    content: '';
+  .project-img-bg {
     position: absolute; inset: 0;
-    background: rgba(160,190,230,0.04);
-    animation: sweepFade 1.1s ease forwards;
+    opacity: 0.07;
+    filter: brightness(0.6);
   }
 
-  @keyframes sweepDown {
-    0%   { top: -4px; opacity: 0; }
-    8%   { opacity: 1; }
-    92%  { opacity: 0.9; }
-    100% { top: 100%; opacity: 0; }
+  .project-img-label {
+    font-family: var(--serif);
+    font-size: 80px;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    opacity: 0.15;
+    user-select: none;
   }
 
-  @keyframes sweepFade {
-    0%   { opacity: 1; }
-    60%  { opacity: 0.4; }
-    100% { opacity: 0; }
+  .project-tags-strip {
+    display: flex; gap: 6px;
+    padding: 14px 0 24px 31px;
+    flex-wrap: wrap;
   }
 
-  /* ── LIST ITEM STAGGER ── */
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-18px); }
-    to   { opacity: 1; transform: translateX(0); }
+  .proj-tag {
+    font-size: 10px; font-weight: 500;
+    color: var(--ink3);
+    border: 1px solid var(--line);
+    padding: 3px 9px;
+    border-radius: 100px;
+    letter-spacing: 0.04em;
+    background: transparent;
+    transition: all 0.2s;
   }
 
-  .list-item-anim {
-    animation: slideInLeft 0.22s cubic-bezier(0.16,1,0.3,1) both;
+  .project-row:hover .proj-tag {
+    color: var(--ink2);
+    border-color: rgba(240,236,228,0.18);
   }
 
-  /* ── TYPEWRITER ── */
-  @keyframes blink-caret {
-    0%,100% { border-color: rgba(91,138,184,0.9); }
-    50%     { border-color: transparent; }
+  /* ── CASE STUDY MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 150;
+    background: rgba(14,13,11,0.5);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: flex-end; justify-content: center;
+    animation: fadeIn 0.2s ease;
   }
 
-  .typewriter {
-    overflow: hidden;
-    border-right: 2px solid rgba(91,138,184,0.9);
-    white-space: nowrap;
-    animation: blink-caret 0.75s step-end infinite;
+  .modal-sheet {
+    width: 100%; max-width: 860px;
+    max-height: 88vh;
+    background: var(--bg3);
+    border-radius: 16px 16px 0 0;
+    border-top: 1px solid var(--line);
+    overflow-y: auto;
+    animation: sheetUp 0.4s var(--ease);
+    padding: 40px 48px 60px;
+    scrollbar-width: thin;
   }
 
-  .typewriter.done {
-    border-color: transparent;
-    animation: none;
+  @keyframes sheetUp {
+    from { transform: translateY(60px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
   }
 
-  /* ── NAV TAB HOVER BORDER SLIDE ── */
-  .nav-tab::before {
-    content: '';
-    position: absolute; top: 0; left: 0;
-    height: 2px; width: 0;
-    background: rgba(91,138,184,0.6);
-    transition: width 0.25s cubic-bezier(0.16,1,0.3,1);
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+    margin: 0 auto 32px;
   }
 
-  .nav-tab:hover::before { width: 100%; }
-  .nav-tab.on::before { width: 100%; background: rgba(91,138,184,0.3); }
-
-  /* ── HOME / ABOUT ── */
-  .about-name {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 34px; color: #e8ecf4; letter-spacing: 0.04em;
-    margin-bottom: 4px;
+  .modal-eyebrow {
+    font-size: 11px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 12px;
   }
 
-  .about-role {
-    font-size: 13px; color: rgba(74,159,212,0.70);
-    letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 18px;
+  .modal-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--ink); margin-bottom: 8px;
   }
 
-  .about-bio {
-    font-size: 13px; color: rgba(140,170,195,0.85);
-    line-height: 1.85; margin-bottom: 20px; max-width: 580px;
+  .modal-tagline {
+    font-size: 16px; font-weight: 300;
+    color: var(--ink2); line-height: 1.6;
+    margin-bottom: 32px; max-width: 540px;
   }
 
-  .about-stats {
-    display: flex; gap: 0; margin-bottom: 24px;
-    border: 1px solid rgba(74,159,212,0.10);
-    width: fit-content;
+  .modal-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 40px;
   }
 
-  .about-stat {
-    padding: 12px 22px; text-align: center;
-    border-right: 1px solid rgba(74,159,212,0.10);
+  .modal-tag {
+    font-size: 11px; font-weight: 500;
+    border: 1px solid var(--line);
+    padding: 4px 12px; border-radius: 100px;
+    color: var(--ink2); letter-spacing: 0.04em;
   }
 
-  .about-stat:last-child { border-right: none; }
-
-  .stat-n {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 22px; color: #e0cc90; display: block; line-height: 1;
+  .modal-divider {
+    height: 1px; background: var(--line);
+    margin: 32px 0;
   }
 
-  .stat-l {
-    font-size: 9px; color: rgba(118,134,158,0.72);
-    letter-spacing: 0.16em; text-transform: uppercase;
-    display: block; margin-top: 3px;
+  .modal-section-label {
+    font-size: 10px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 10px;
   }
 
-  .tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
-
-  .tag {
-    font-size: 9px; color: rgba(80,120,180,0.55);
-    border: 1px solid rgba(80,120,180,0.17);
-    padding: 3px 8px; letter-spacing: 0.1em; text-transform: uppercase;
-    background: rgba(80,120,180,0.05);
-  }
-
-  .now-box {
-    background: rgba(15,20,32,0.55);
-    border: 1px solid rgba(80,120,180,0.20);
-    border-left: 3px solid #5b8ab8;
-    padding: 14px 16px;
-    display: flex; align-items: center; gap: 12px;
+  .modal-section-text {
+    font-size: 15px; font-weight: 300;
+    color: var(--ink2); line-height: 1.8;
     margin-bottom: 24px;
   }
 
-  .now-label {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 13px; color: rgba(220,228,240,0.92);
-    letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px;
+  .modal-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px; margin-bottom: 24px;
   }
 
-  .now-sub { font-size: 11px; color: rgba(118,134,158,0.82); }
-
-  .home-section-title {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 13px; color: rgba(74,159,212,0.70);
-    letter-spacing: 0.18em; text-transform: uppercase;
-    margin-bottom: 12px; padding-bottom: 6px;
-    border-bottom: 1px solid rgba(80,120,180,0.09);
+  .modal-links {
+    display: flex; gap: 12px; margin-top: 40px;
   }
 
-  /* ── PROJECTS ── */
-  .proj-entry {
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(80,120,180,0.07);
+  .modal-btn {
+    font-family: var(--sans);
+    font-size: 13px; font-weight: 500;
+    color: var(--bg);
+    background: var(--ink);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 100px;
+    cursor: pointer; text-decoration: none;
+    transition: opacity 0.2s;
+    letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 6px;
   }
 
-  .proj-entry:last-child { border-bottom: none; }
+  .modal-btn:hover { opacity: 0.75; }
 
-  .proj-title {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 18px; color: rgba(235,220,160,0.95);
-    letter-spacing: 0.04em; margin-bottom: 2px;
-    display: flex; align-items: center; gap: 10px;
+  .modal-btn.outline {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
   }
 
-  .feat-badge {
-    font-size: 9px; color: rgba(74,159,212,0.70);
-    border: 1px solid rgba(80,120,180,0.24);
-    padding: 2px 7px; letter-spacing: 0.1em; text-transform: uppercase;
-    background: rgba(80,120,180,0.05);
+  .modal-btn.outline:hover { background: var(--bg3); opacity: 1; }
+
+  .modal-close {
+    position: absolute; top: 20px; right: 24px;
+    font-size: 13px; font-weight: 500;
+    color: var(--ink3); cursor: pointer;
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    padding: 6px 14px; border-radius: 100px;
+    transition: all 0.2s;
+    font-family: var(--sans);
   }
 
-  .proj-desc {
-    font-size: 13px; color: rgba(160,174,196,0.85);
-    line-height: 1.75; margin: 8px 0 10px;
+  .modal-close:hover { color: var(--ink); }
+
+  /* ── ABOUT / INFO SECTION ── */
+  .about-section {
+    padding: 80px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
   }
 
-  .proj-links { display: flex; gap: 8px; }
-
-  .btn {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: rgba(180,210,235,0.9);
-    background: rgba(20,50,78,0.7);
-    border: 1px solid rgba(80,120,180,0.24);
-    padding: 6px 14px; cursor: pointer;
-    transition: all 0.12s; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 4px;
+  .about-headline {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 52px);
+    letter-spacing: -0.02em; line-height: 1.1;
+    color: var(--ink); margin-bottom: 24px;
   }
 
-  .btn:hover { background: rgba(30,70,110,0.8); border-color: rgba(74,159,212,0.40); color: #fff; }
-
-  /* ── SKILLS ── */
-  .skill-section { margin-bottom: 24px; }
-
-  .skill-cat {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 11px; color: rgba(80,120,180,0.65);
-    letter-spacing: 0.22em; text-transform: uppercase;
-    margin-bottom: 10px; padding-bottom: 5px;
-    border-bottom: 1px solid rgba(80,120,180,0.07);
-  }
-
-  .skill-row {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 9px;
-  }
-
-  .skill-name { font-size: 13px; color: rgba(180,192,210,0.85); min-width: 170px; }
-
-  .bar-bg {
-    flex: 1; height: 4px;
-    background: rgba(80,120,180,0.07);
-    border: 1px solid rgba(80,120,180,0.09); overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, rgba(30,70,110,0.9), rgba(80,120,180,0.80));
-    transition: width 1.1s cubic-bezier(0.16,1,0.3,1);
-  }
-
-  .bar-pct {
-    font-size: 10px; color: rgba(150,128,70,0.70);
-    min-width: 28px; text-align: right;
-    font-family: monospace;
-  }
-
-  /* ── WRITING ── */
-  .blog-entry {
-    padding: 18px 0;
-    border-bottom: 1px solid rgba(80,120,180,0.07);
-  }
-
-  .blog-entry:last-child { border-bottom: none; }
-
-  .blog-date {
-    font-size: 11px; color: rgba(118,134,158,0.72);
-    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px;
-  }
-
-  .blog-title {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 18px; color: rgba(235,220,160,0.95);
-    letter-spacing: 0.04em; margin-bottom: 8px;
-  }
-
-  .blog-excerpt {
-    font-size: 13px; color: rgba(160,174,196,0.85); line-height: 1.75;
-    margin-bottom: 10px;
-  }
-
-  .blog-more {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 11px; color: rgba(74,159,212,0.70);
-    letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer;
-  }
-
-  /* ── CONTACT ── */
-  .contact-layout { display: flex; gap: 32px; align-items: flex-start; }
-
-  .contact-col { width: 220px; flex-shrink: 0; }
-
-  .c-entry {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 0; border-bottom: 1px solid rgba(80,120,180,0.07);
-    text-decoration: none;
-  }
-
-  .c-entry:first-child { border-top: 1px solid rgba(80,120,180,0.07); }
-  .c-entry:hover .c-title { color: rgba(80,120,180,0.80); }
-
-  .c-icon {
-    width: 34px; height: 34px; flex-shrink: 0;
-    background: rgba(24,20,10,0.85);
-    border: 1px solid rgba(80,120,180,0.14);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 10px; color: rgba(74,159,212,0.50);
-  }
-
-  .c-lbl {
-    font-size: 9px; color: rgba(108,124,148,0.65);
-    letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 2px;
-  }
-
-  .c-title {
-    font-size: 12px; color: rgba(180,192,210,0.85);
-    transition: color 0.12s;
-  }
-
-  .form-col { flex: 1; }
-
-  .f-lbl {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 10px; color: rgba(118,134,158,0.72);
-    letter-spacing: 0.18em; text-transform: uppercase;
-    display: block; margin-bottom: 5px;
-  }
-
-  .f-inp {
-    width: 100%;
-    background: rgba(18,24,38,0.82);
-    border: 1px solid rgba(74,159,212,0.10); border-top-color: rgba(80,120,180,0.17);
-    color: rgba(220,228,240,0.92);
-    font-family: 'Open Sans', sans-serif; font-size: 13px;
-    padding: 9px 12px; outline: none; margin-bottom: 12px;
-    transition: border-color 0.12s;
-  }
-
-  .f-inp:focus { border-color: rgba(74,159,212,0.30); }
-  .f-inp::placeholder { color: rgba(140,118,60,0.50); }
-
-  .f-btn {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: #ede0b0;
-    background: rgba(20,50,80,0.8);
-    border: 1px solid rgba(80,120,180,0.27); border-top-color: rgba(74,159,212,0.40);
-    padding: 10px 0; width: 100%; cursor: pointer;
-    transition: background 0.12s;
-  }
-
-  .f-btn:hover { background: rgba(30,70,110,0.9); }
-
-  .sent-state { text-align: center; padding: 40px 0; }
-
-  .sent-t {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 22px; color: #40c870; letter-spacing: 0.08em; margin-bottom: 6px;
-  }
-
-  .sent-s { font-size: 12px; color: rgba(118,134,158,0.72); letter-spacing: 0.14em; text-transform: uppercase; }
-
-  /* scroll down arrow */
-  .scroll-hint {
-    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-    font-size: 16px; color: rgba(74,159,212,0.30);
-    animation: bounce 2s ease-in-out infinite;
-  }
-
-  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(4px)} }
-
-  /* ── PLANWISE SPOTLIGHT ── */
-  .pw-spotlight {
-    background: rgba(18,24,38,0.82);
-    border: 1px solid rgba(74,159,212,0.20);
-    border-top: 2px solid #5b8ab8;
-    margin-bottom: 22px;
-    overflow: hidden;
-  }
-
-  .pw-spotlight-header {
-    padding: 16px 20px 14px;
-    border-bottom: 1px solid rgba(80,120,180,0.09);
-    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
-  }
-
-  .pw-eyebrow {
-    font-size: 9px; color: #5b8ab8;
-    letter-spacing: 0.26em; text-transform: uppercase; margin-bottom: 5px;
-    display: flex; align-items: center; gap: 6px;
-  }
-
-  .pw-dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: #5b8ab8; box-shadow: 0 0 6px #5b8ab8;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  .pw-title {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 24px; color: #e8ecf4; letter-spacing: 0.04em; margin-bottom: 4px;
-  }
-
-  .pw-short {
-    font-size: 12px; color: rgba(160,174,196,0.85); line-height: 1.6; max-width: 480px;
-  }
-
-  .pw-header-links { display: flex; gap: 8px; flex-shrink: 0; padding-top: 4px; }
-
-  .pw-body { padding: 0 20px 18px; }
-
-  .pw-long {
-    font-size: 13px; color: rgba(152,166,190,0.88);
-    line-height: 1.8; padding: 14px 0 16px;
-    border-bottom: 1px solid rgba(80,120,180,0.07);
+  .about-body {
+    font-size: 15px; font-weight: 300;
+    color: var(--ink2); line-height: 1.85;
     margin-bottom: 16px;
   }
 
-  .pw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .about-right { display: flex; flex-direction: column; gap: 0; }
 
-  .pw-section-label {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 10px; color: rgba(74,159,212,0.60);
-    letter-spacing: 0.22em; text-transform: uppercase;
-    margin-bottom: 10px; padding-bottom: 5px;
-    border-bottom: 1px solid rgba(80,120,180,0.09);
+  .about-row {
+    display: flex; justify-content: space-between;
+    align-items: baseline;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line2);
   }
 
-  .pw-feature-row {
-    display: flex; align-items: flex-start; gap: 8px;
-    margin-bottom: 7px;
+  .about-row:first-child { border-top: 1px solid var(--line2); }
+
+  .about-row-label {
+    font-size: 11px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
-  .pw-feature-icon { font-size: 12px; flex-shrink: 0; margin-top: 1px; }
-
-  .pw-feature-text {
-    font-size: 11px; color: rgba(120,158,185,0.85); line-height: 1.55;
+  .about-row-value {
+    font-size: 14px; font-weight: 300;
+    color: var(--ink2); text-align: right;
   }
 
-  .pw-stack-row { display: flex; flex-direction: column; gap: 6px; }
-
-  .pw-stack-item { display: flex; align-items: flex-start; gap: 8px; }
-
-  .pw-stack-key {
-    font-size: 9px; color: rgba(74,159,212,0.50);
-    letter-spacing: 0.1em; text-transform: uppercase;
-    min-width: 52px; padding-top: 1px; flex-shrink: 0;
+  /* ── SKILLS SECTION ── */
+  .skills-section {
+    padding: 80px 40px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg2);
   }
 
-  .pw-stack-val { font-size: 11px; color: rgba(148,162,186,0.84); line-height: 1.5; }
-
-  .pw-ds-row {
-    display: flex; gap: 8px; margin-bottom: 7px; align-items: flex-start;
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 48px;
+    margin-top: 48px;
   }
 
-  .pw-ds-name {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 12px; color: rgba(200,210,228,0.92);
-    min-width: 120px; flex-shrink: 0;
+  .skill-group-title {
+    font-size: 11px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 20px;
   }
 
-  .pw-ds-detail { font-size: 11px; color: rgba(138,154,178,0.78); line-height: 1.5; }
-
-  .pw-toggle {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700;
-    font-size: 10px; color: rgba(74,159,212,0.50);
-    letter-spacing: 0.16em; text-transform: uppercase;
-    cursor: pointer; padding: 8px 20px;
-    border-top: 1px solid rgba(80,120,180,0.05);
-    text-align: center; transition: color 0.12s, background 0.12s;
+  .skill-item {
+    display: flex; justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
   }
 
-  .pw-toggle:hover { color: rgba(80,120,180,0.80); background: rgba(80,120,180,0.05); }
+  .skill-name {
+    font-size: 13px; font-weight: 400; color: var(--ink2);
+  }
 
-  .home-pw-card {
-    background: rgba(18,24,38,0.72);
-    border: 1px solid rgba(80,120,180,0.20);
-    border-top: 2px solid #5b8ab8;
-    padding: 18px 20px;
-    margin-bottom: 20px;
+  .skill-bar-wrap {
+    width: 48px; height: 2px; background: rgba(240,236,228,0.12);
+    border-radius: 1px; overflow: hidden;
+  }
+
+  .skill-bar {
+    height: 100%; background: var(--ink);
+    border-radius: 1px;
+    transition: width 1.2s var(--ease);
+  }
+
+  /* ── WRITING SECTION ── */
+  .writing-section {
+    padding: 80px 40px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  .writing-article {
+    max-width: 680px;
+    margin-top: 48px;
+  }
+
+  .article-meta {
+    font-size: 12px; font-weight: 400;
+    color: var(--ink3); letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    font-family: var(--mono);
+  }
+
+  .article-title {
+    font-family: var(--serif);
+    font-size: clamp(24px, 3vw, 36px);
+    letter-spacing: -0.02em; line-height: 1.15;
+    color: var(--ink); margin-bottom: 16px;
+  }
+
+  .article-tags {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+
+  .article-tag {
+    font-size: 10px; font-weight: 500;
+    border: 1px solid var(--line);
+    padding: 3px 10px; border-radius: 100px;
+    color: var(--ink3); letter-spacing: 0.04em;
+  }
+
+  .article-section-head {
+    font-size: 14px; font-weight: 500;
+    color: var(--ink); margin: 28px 0 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .article-para {
+    font-size: 14px; font-weight: 300;
+    color: var(--ink2); line-height: 1.85;
+    margin-bottom: 16px;
+  }
+
+  .article-strong { font-weight: 500; color: var(--ink); }
+
+  /* ── CONTACT SECTION ── */
+  .contact-section {
+    padding: 80px 40px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    background: var(--bg2);
+  }
+
+  .contact-headline {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 52px);
+    letter-spacing: -0.02em; line-height: 1.1;
+    color: var(--ink); margin-bottom: 20px;
+  }
+
+  .contact-sub {
+    font-size: 15px; font-weight: 300;
+    color: var(--ink2); line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .contact-links-list { display: flex; flex-direction: column; gap: 0; }
+
+  .contact-link-row {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none; color: inherit;
+    transition: padding-left 0.2s var(--ease);
+  }
+
+  .contact-link-row:first-child { border-top: 1px solid var(--line); }
+  .contact-link-row:hover { padding-left: 8px; background: rgba(255,180,60,0.03); }
+
+  .contact-link-label {
+    font-size: 13px; font-weight: 400; color: var(--ink2);
+  }
+
+  .contact-link-value {
+    font-size: 12px; color: var(--ink3);
+    font-family: var(--mono);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .contact-link-value::after { content: '↗'; font-size: 10px; }
+
+  .contact-link-row:hover .contact-link-label { color: var(--ink); }
+  .contact-link-row:hover .contact-link-value { color: var(--ink2); }
+
+  /* form */
+  .form-group { margin-bottom: 20px; }
+
+  .form-label {
+    display: block; font-size: 11px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: transparent;
+    border: none; border-bottom: 1px solid var(--line);
+    padding: 10px 0;
+    font-family: var(--sans); font-size: 14px; font-weight: 300;
+    color: var(--ink); outline: none;
+    transition: border-color 0.2s;
+    border-radius: 0;
+  }
+
+  .form-input:focus { border-bottom-color: var(--ink); }
+  .form-input::placeholder { color: var(--ink3); }
+  .form-input.err { border-bottom-color: #ef4444; }
+
+  .form-err {
+    font-size: 11px; color: #ef4444;
+    margin-top: 4px; letter-spacing: 0.04em;
+  }
+
+  .form-submit {
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    color: var(--bg); background: var(--ink);
+    border: none; padding: 14px 32px;
+    border-radius: 100px; cursor: pointer;
+    transition: opacity 0.2s; margin-top: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .form-submit:hover { opacity: 0.75; }
+  .form-submit:disabled { opacity: 0.45; cursor: wait; }
+
+  .sent-state {
+    padding: 40px 0; text-align: left;
+  }
+
+  .sent-title {
+    font-family: var(--serif);
+    font-size: 28px; letter-spacing: -0.02em;
+    color: var(--ink); margin-bottom: 8px;
+  }
+
+  .sent-sub {
+    font-size: 14px; font-weight: 300; color: var(--ink3);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 32px 40px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+    border-top: 1px solid var(--line2);
+  }
+
+  .footer-left {
+    font-size: 13px; font-weight: 300; color: var(--ink3);
+  }
+
+  .footer-right {
+    font-size: 12px; color: var(--ink3);
+    font-style: italic;
+    font-family: var(--serif);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  }
+
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* stagger children */
+  .reveal-children > * {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  }
+
+  .reveal-children.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay: 0s; }
+  .reveal-children.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay: 0.08s; }
+  .reveal-children.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay: 0.16s; }
+  .reveal-children.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay: 0.24s; }
+  .reveal-children.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay: 0.32s; }
+  .reveal-children.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay: 0.40s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav { padding: 0 20px; }
+    .hero { padding: 0 20px 48px; }
+    .hero-scroll-hint { display: none; }
+    .hero-bottom { flex-direction: column; gap: 20px; align-items: flex-start; }
+    .section-label { padding: 40px 20px 0; }
+    .project-row { padding: 0 20px; }
+    .project-title-row { font-size: 28px; }
+    .about-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+    .skills-section { padding: 60px 20px; }
+    .skills-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .writing-section { padding: 60px 20px; }
+    .contact-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+    .footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
+    .modal-sheet { padding: 32px 24px 48px; }
+    .modal-grid { grid-template-columns: 1fr; }
   }
 `;
 
-// ── COMPONENTS ──────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// HOOKS
+// ─────────────────────────────────────────────
+function useReveal() {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return [ref, visible];
+}
 
-function PlanWiseSpotlight({ compact = false }) {
-  const pw = PROJECTS.find(p => p.id === 5);
-  const [expanded, setExpanded] = useState(!compact);
+// ─────────────────────────────────────────────
+// COMPONENTS
+// ─────────────────────────────────────────────
+
+function ProjectModal({ project, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", handler); };
+  }, [onClose]);
+
   return (
-    <div className="pw-spotlight">
-      <div className="pw-spotlight-header">
-        <div style={{ flex: 1 }}>
-          <div className="pw-eyebrow"><div className="pw-dot" />Featured Project</div>
-          <div className="pw-title">{pw.title}</div>
-          <div className="pw-short">{pw.description}</div>
-          <div className="tag-row" style={{ marginTop: 10 }}>
-            {pw.tags.map(t => <span className="tag" key={t}>{t}</span>)}
-          </div>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-sheet" style={{ position: "relative" }} onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>Close ✕</button>
+        <div className="modal-handle" />
+        <div className="modal-eyebrow">{project.company} · {project.year}</div>
+        <div className="modal-title">{project.title}</div>
+        <div className="modal-tagline">{project.tagline}</div>
+        <div className="modal-tags">
+          {project.tags.map(t => <span className="modal-tag" key={t}>{t}</span>)}
         </div>
-        <div className="pw-header-links">
-          <a className="btn" href={pw.github} target="_blank" rel="noreferrer">GitHub →</a>
-          <a className="btn" href={pw.demo} target="_blank" rel="noreferrer">Live Demo</a>
-        </div>
-      </div>
 
-      {expanded && (
-        <div className="pw-body">
-          <p className="pw-long">{pw.longDescription}</p>
-          <div className="pw-grid">
-            <div>
-              <div className="pw-section-label">Key Features</div>
-              {pw.features.map((f, i) => (
-                <div className="pw-feature-row" key={i}>
-                  <span className="pw-feature-icon">{f.icon}</span>
-                  <span className="pw-feature-text">{f.text}</span>
+        <div className="modal-divider" />
+
+        <p className="modal-section-text" style={{ fontSize: 15, lineHeight: 1.8 }}>
+          {project.longDesc}
+        </p>
+
+        {project.case && (
+          <>
+            <div className="modal-divider" />
+            <div className="modal-grid">
+              {[
+                ["Problem", project.case.problem],
+                ["Solution", project.case.solution],
+                ["Architecture", project.case.architecture],
+                ["Lessons", project.case.lessons],
+              ].map(([label, text]) => (
+                <div key={label}>
+                  <div className="modal-section-label">{label}</div>
+                  <div className="modal-section-text">{text}</div>
                 </div>
               ))}
             </div>
-            <div>
-              <div className="pw-section-label">Tech Stack</div>
-              <div className="pw-stack-row" style={{ marginBottom: 18 }}>
-                {Object.entries(pw.techStack).map(([k, v]) => (
-                  <div className="pw-stack-item" key={k}>
-                    <span className="pw-stack-key">{k}</span>
-                    <span className="pw-stack-val">{v}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="pw-section-label">Data Structures</div>
-              {pw.dataStructures.map((d, i) => (
-                <div className="pw-ds-row" key={i}>
-                  <span className="pw-ds-name">{d.name}</span>
-                  <span className="pw-ds-detail">{d.detail}</span>
+          </>
+        )}
+
+        {project.techStack && (
+          <>
+            <div className="modal-divider" />
+            <div className="modal-section-label">Tech Stack</div>
+            <div className="modal-grid" style={{ marginTop: 12 }}>
+              {Object.entries(project.techStack).map(([k, v]) => (
+                <div key={k}>
+                  <div style={{ fontSize: 10, color: "var(--ink3)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>{k}</div>
+                  <div style={{ fontSize: 13, fontWeight: 300, color: "var(--ink2)" }}>{v}</div>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
 
-      <div className="pw-toggle" onClick={() => setExpanded(e => !e)}>
-        {expanded ? "▲ Show Less" : "▼ Show Full Details"}
-      </div>
-    </div>
-  );
-}
-
-function HomeContent() {
-  return (
-    <div className="fade">
-      <div className="about-name">Nathan Hoang</div>
-      <div className="about-role">Software Engineer · Full-Stack & Systems · CSUF 2026</div>
-
-      <div className="about-stats">
-        {[["CSUF","University"],["3.8","GPA"],["5","Projects"],["2026","Grad Year"]].map(([n,l]) => (
-          <div className="about-stat" key={l}>
-            <span className="stat-n">{n}</span>
-            <span className="stat-l">{l}</span>
-          </div>
-        ))}
-      </div>
-
-      <p className="about-bio">
-        CS student at Cal State Fullerton building full-stack systems that are fast, reliable, and
-        well-architected. I care about clean architecture, scalable backends, and code that actually
-        ships. Outside of class I build projects, contribute to open source, and learn how real
-        production systems work under the hood.
-      </p>
-
-      <div className="tag-row">
-        {["Full-Stack","Node.js","React","TypeScript","Python","Java","Rust","PostgreSQL","Blockchain","REST APIs"].map(t => (
-          <span className="tag" key={t}>{t}</span>
-        ))}
-      </div>
-
-      <div className="home-section-title">Featured Project</div>
-
-      <div className="home-feat-card">
-        <div className="home-feat-top">
-          <div>
-            <div className="home-feat-eyebrow">
-              <div className="avail-dot" style={{width:5,height:5}} />
-              AI &middot; Full-Stack
+        {project.features && (
+          <>
+            <div className="modal-divider" />
+            <div className="modal-section-label">Key Features</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
+              {project.features.map((f, i) => (
+                <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <span style={{ fontSize: 13, flexShrink: 0 }}>{f.icon}</span>
+                  <span style={{ fontSize: 13, fontWeight: 300, color: "var(--ink2)", lineHeight: 1.6 }}>{f.text}</span>
+                </div>
+              ))}
             </div>
-            <div className="home-feat-title">PlanWise</div>
-            <div className="home-feat-desc">
-              A full-stack smart calendar that learns your scheduling habits and uses the Claude API
-              to suggest optimal times, detect conflicts with context-aware reasoning, and protect
-              focus blocks. Built with React, Python/Flask, SQLite, and JWT auth.
-            </div>
-          </div>
-          <div className="home-feat-links">
-            <a className="btn" href="https://github.com/NathanHoangCS/PlanWise" target="_blank" rel="noreferrer">GitHub</a>
-            <a className="btn" href="https://demo.com" target="_blank" rel="noreferrer">Demo</a>
-          </div>
-        </div>
-        <div className="home-feat-tags">
-          {["React","Python","Flask","SQLite","Claude API","JWT","AI"].map(t => (
-            <span className="tag" key={t}>{t}</span>
-          ))}
-        </div>
-        <div className="home-feat-footer" onClick={() => {}}>
-          Full case study &amp; architecture breakdown in Projects tab &rarr;
-        </div>
-      </div>
+          </>
+        )}
 
-      <div className="looking-for">
-        <div className="lf-row">
-          <div className="lf-item">
-            <div className="lf-label">Status</div>
-            <div className="lf-value">
-              <span className="avail-dot" style={{width:6,height:6,marginRight:6}} />
-              Open to internships &amp; entry-level roles
-            </div>
-          </div>
-          <div className="lf-item">
-            <div className="lf-label">Location</div>
-            <div className="lf-value">Fullerton, CA &mdash; open to remote</div>
-          </div>
-          <div className="lf-item">
-            <div className="lf-label">Currently Building</div>
-            <div className="lf-value">Surge Live &mdash; live leaderboards + REST API</div>
-          </div>
+        <div className="modal-links">
+          <a className="modal-btn" href={project.github} target="_blank" rel="noreferrer">
+            GitHub ↗
+          </a>
+          {project.demo && (
+            <a className="modal-btn outline" href={project.demo} target="_blank" rel="noreferrer">
+              Live Demo ↗
+            </a>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function ProjectsContent() {
-  const [filter, setFilter] = useState("All");
-  const filters = ["All", "Featured", "Full-Stack", "Blockchain", "Systems", "AI"];
-  const otherProjects = PROJECTS.filter(p => p.id !== 5);
-  const filtered = filter === "All" ? otherProjects
-    : filter === "Featured" ? otherProjects.filter(p => p.featured)
-    : filter === "AI" ? [] // PlanWise shown in spotlight
-    : otherProjects.filter(p => p.tags.some(t => t.toLowerCase().includes(filter.toLowerCase())));
-
+function ProjectRow({ project, index, onClick }) {
   return (
-    <div className="fade">
-      <PlanWiseSpotlight compact={false} />
-
-      <div className="home-section-title" style={{ marginTop: 4 }}>Other Projects</div>
-      <div style={{ display: "flex", gap: 4, marginBottom: 18 }}>
-        {filters.filter(f => f !== "AI").map(f => (
-          <button key={f} className={`right-sub-tab ${filter === f ? "on" : ""}`} onClick={() => setFilter(f)}>{f}</button>
-        ))}
-      </div>
-      {filtered.map(p => (
-        <div className="proj-entry" key={p.id}>
-          <div className="proj-title">
-            {p.title}
-            {p.featured && <span className="feat-badge">Featured</span>}
-          </div>
-          <div className="tag-row">
-            {p.tags.map(t => <span className="tag" key={t}>{t}</span>)}
-          </div>
-          <p className="proj-desc">{p.description}</p>
-          <div className="proj-links">
-            <a className="btn" href={p.github} target="_blank" rel="noreferrer">GitHub →</a>
-            {p.demo && <a className="btn" href={p.demo} target="_blank" rel="noreferrer">Live Demo</a>}
-          </div>
+    <div className="project-row" onClick={() => onClick(project)}>
+      <div className="project-row-inner">
+        <div className="project-row-left">
+          <span className="project-num">0{index + 1}</span>
+          <span className="project-title-row">{project.title}</span>
         </div>
-      ))}
+        <div className="project-row-meta">
+          <span>{project.company}</span>
+          <span style={{ color: "var(--ink3)" }}>·</span>
+          <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>{project.year}</span>
+          <span className="project-arrow">↗</span>
+        </div>
+      </div>
+      <div className="project-tagline">{project.tagline}</div>
+      <div className="project-img-strip">
+        <div className="project-img-placeholder" style={{ background: project.color }}>
+          <div className="project-img-bg" style={{ background: project.color }} />
+          <span className="project-img-label">{project.title}</span>
+        </div>
+      </div>
+      <div className="project-tags-strip">
+        {project.tags.map(t => <span className="proj-tag" key={t}>{t}</span>)}
+      </div>
     </div>
   );
 }
 
-function SkillsContent() {
-  const [ready, setReady] = useState(false);
-  const [active, setActive] = useState("All");
-  useEffect(() => { const t = setTimeout(() => setReady(true), 80); return () => clearTimeout(t); }, []);
+function SkillsSection() {
+  const [ref, visible] = useReveal();
+  const [barsVisible, setBarsVisible] = useState(false);
 
-  const cats = ["All", ...Object.keys(SKILLS)];
-  const toShow = active === "All" ? Object.entries(SKILLS) : Object.entries(SKILLS).filter(([c]) => c === active);
+  useEffect(() => {
+    if (visible) setTimeout(() => setBarsVisible(true), 200);
+  }, [visible]);
 
   return (
-    <div className="fade">
-      <div style={{ display: "flex", gap: 4, marginBottom: 18 }}>
-        {cats.map(c => (
-          <button key={c} className={`right-sub-tab ${active === c ? "on" : ""}`} onClick={() => setActive(c)}>{c}</button>
-        ))}
+    <section className="skills-section">
+      <div className="section-label reveal-children" ref={ref}>
+        <span>Skills &amp; Technologies</span>
       </div>
-      {toShow.map(([cat, skills]) => (
-        <div className="skill-section" key={cat}>
-          <div className="skill-cat">{cat}</div>
-          {skills.map(s => (
-            <div className="skill-row" key={s.name}>
-              <span className="skill-name">{s.name}</span>
-              <div className="bar-bg">
-                <div className="bar-fill" style={{ width: ready ? `${s.level}%` : "0%" }} />
+      <div className="skills-grid">
+        {Object.entries(SKILLS).map(([cat, skills]) => (
+          <div key={cat}>
+            <div className="skill-group-title">{cat}</div>
+            {skills.map(s => (
+              <div className="skill-item" key={s.name}>
+                <span className="skill-name">{s.name}</span>
+                <div className="skill-bar-wrap">
+                  <div className="skill-bar" style={{ width: barsVisible ? `${s.level}%` : "0%" }} />
+                </div>
               </div>
-              <span className="bar-pct">{s.level}%</span>
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const SH = ({ children }) => (
-  <div style={{
-    fontFamily: "'Rajdhani', sans-serif", fontWeight: 700,
-    fontSize: 15, color: "rgba(220,228,240,0.92)",
-    letterSpacing: "0.04em", marginBottom: 8, paddingBottom: 6,
-    borderBottom: "1px solid rgba(80,120,180,0.09)", marginTop: 20,
-  }}>{children}</div>
-);
-
-const SP = ({ children }) => (
-  <p className="blog-excerpt" style={{ marginBottom: 10 }}>{children}</p>
-);
-
-function WritingContent() {
-  return (
-    <div className="fade">
-      <div className="blog-entry" style={{ paddingTop: 0, borderBottom: "none" }}>
-        <div className="blog-date">Apr 2025 &middot; ~8 min read</div>
-        <div className="blog-title">Building PlanWise: A Calendar That Actually Learns You</div>
-        <div className="tag-row" style={{ marginBottom: 20 }}>
-          {["Full-Stack","React","Python","AI"].map(t => <span className="tag" key={t}>{t}</span>)}
-        </div>
-
-        <SP>Most calendar apps treat you like a blank slate every time you open them. You stare at an empty grid, manually type in every event, and the app just sits there. It does not notice that you always block Tuesday mornings for deep work. It does not care that you have scheduled back-to-back meetings every Friday for the past month. It just holds your data and does nothing with it.</SP>
-        <SP>That bothered me. So I built PlanWise &mdash; a full-stack calendar app that starts completely empty and learns your scheduling habits as you actually use it. The more you plan, the smarter it gets.</SP>
-
-        <SH>The idea behind it</SH>
-        <SP>The core concept was simple: what if your calendar could do what a good assistant does? Notice patterns. Flag conflicts before they happen. Suggest times based on when you are actually productive, not just when a slot is technically free.</SP>
-        <SP>To make that work, I needed three things to come together: a solid data layer that could efficiently query and analyze events, an AI layer that could reason about them in natural language, and a frontend fast enough to make drag-and-drop and real-time suggestions feel natural.</SP>
-
-        <SH>Starting with data structures</SH>
-        <SP>Before touching the AI, I had to make the backend fast. Every suggestion, every conflict check, every pattern nudge depends on reading and querying events efficiently. So I built two custom data structures instead of just hitting the database every time.</SP>
-        <SP>The first is an EventHashMap &mdash; keyed by event ID, giving O(1) average-case lookup. It also maintains a secondary date index so you can pull all events on a given day in O(k). Every write to the database also updates the map, so the two are always in sync.</SP>
-        <SP>The second is an EventMinHeap &mdash; a binary min-heap ordered by (datetime, priority). This powers the upcoming events panel and the AI suggestion engine. Instead of sorting the full event list every time, the heap gives you the next high-priority events in O(n log n) with O(log n) inserts. It uses lazy deletion with a tombstone set so removing events does not require rebuilding the whole structure.</SP>
-
-        <SH>The pattern engine</SH>
-        <SP>Once events start accumulating, the PatternEngine class runs over the full event history and extracts preferred days per event type, preferred hours, average duration, meetings per week, focus blocks per week, and overloaded days. Pure Python &mdash; no ML library, no external API. Just analysis over the HashMap and MinHeap.</SP>
-        <SP>The most interesting output is the nudge system. After you log three or more events, the engine detects recurring patterns and surfaces them as non-intrusive notifications. If you have been scheduling a deep work block every Monday at 10am, the next Monday you open the app you will see a prompt to add it again. One click and it is on the calendar.</SP>
-
-        <SH>Bringing in the Claude API</SH>
-        <SP>The pattern engine handles data analysis. The Claude API handles reasoning and language. There are three places it plugs in:</SP>
-        <SP><strong style={{color:"rgba(200,210,228,0.92)"}}>Personalized suggestions</strong> &mdash; the pattern engine builds a context object and sends it to Claude along with the user onboarding profile. Claude returns three specific, actionable suggestions based on real scheduling data, not generic tips.</SP>
-        <SP><strong style={{color:"rgba(200,210,228,0.92)"}}>Natural language event creation</strong> &mdash; type something like &quot;study for calc exam Friday 2 hours&quot; and Claude parses it into a structured event with title, type, date, start time, end time, and priority. The parsed result shows a confidence score before you confirm.</SP>
-        <SP><strong style={{color:"rgba(200,210,228,0.92)"}}>Conflict detection with reasoning</strong> &mdash; when you add an overlapping event, instead of just flagging a conflict, the app calls Claude with the context of both events. Claude returns a context-aware explanation and gives you three resolution options. It makes the app feel genuinely intelligent rather than just a rules engine.</SP>
-
-        <SH>Auth and persistence</SH>
-        <SP>Early versions stored everything in React state &mdash; events disappeared on refresh. I set up SQLite with SQLAlchemy for persistence, Flask-JWT-Extended for token-based auth, and bcrypt for password hashing. Every event is scoped to a user ID so data stays completely isolated.</SP>
-        <SP>One pattern I am proud of: optimistic UI updates on drag-and-drop. When you drag an event to a new time slot, the UI updates instantly while the PUT request fires in the background. If the save fails, the frontend reloads from the database to restore correct state. It makes the drag feel snappy even on slow connections.</SP>
-
-        <SH>What it taught me</SH>
-        <SP>Building PlanWise end-to-end &mdash; from data structures to database schema to AI integration to drag-and-drop UI &mdash; gave me a much clearer picture of how all those layers actually talk to each other in a real application. It is easy to understand each piece in isolation. It is harder to make them feel coherent together.</SP>
-        <SP>The most valuable lesson: AI features are only as good as the data you feed them. The Claude API is extremely capable, but the quality of the suggestions depends entirely on how well the pattern engine extracts signal from the event history. Getting the data layer right first made the AI layer much easier to build.</SP>
+            ))}
+          </div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 }
 
-function ContactContent() {
+function ContactForm() {
   const [form, setForm] = useState({ name: "", email: "", msg: "" });
   const [touched, setTouched] = useState({ name: false, email: false, msg: false });
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [serverErr, setServerErr] = useState(false);
 
-  const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
-  const fieldError = {
-    name:  touched.name  && !form.name.trim()        ? "Name is required" : null,
-    email: touched.email && !isValidEmail(form.email) ? "Enter a valid email" : null,
-    msg:   touched.msg   && form.msg.trim().length < 10 ? "Message is too short" : null,
+  const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const errs = {
+    name:  touched.name  && !form.name.trim()    ? "Required" : null,
+    email: touched.email && !isEmail(form.email) ? "Valid email needed" : null,
+    msg:   touched.msg   && form.msg.length < 10 ? "Too short" : null,
   };
-  const isValid = form.name.trim() && isValidEmail(form.email) && form.msg.trim().length >= 10;
+  const valid = form.name.trim() && isEmail(form.email) && form.msg.length >= 10;
 
-  const send = async () => {
+  const submit = async () => {
     setTouched({ name: true, email: true, msg: true });
-    if (!isValid) return;
-    setSending(true);
-    setError(false);
+    if (!valid) return;
+    setSending(true); setServerErr(false);
     try {
-      const res = await fetch("https://formspree.io/f/mkokbkpj", {
+      const r = await fetch("https://formspree.io/f/mkokbkpj", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ name: form.name, email: form.email, message: form.msg }),
       });
-      if (res.ok) { setSent(true); }
-      else { setError(true); }
-    } catch { setError(true); }
+      if (r.ok) setSent(true); else setServerErr(true);
+    } catch { setServerErr(true); }
     finally { setSending(false); }
   };
 
+  if (sent) return (
+    <div className="sent-state">
+      <div className="sent-title">Message sent.</div>
+      <div className="sent-sub">I'll get back to you within 24 hours.</div>
+    </div>
+  );
+
   return (
-    <div className="fade">
-      {sent ? (
-        <div className="sent-state">
-          <div className="sent-t">Message Sent</div>
-          <div className="sent-s">I'll respond within 24 hours</div>
-        </div>
-      ) : (
-        <div className="contact-layout">
-          <div className="contact-col">
-            {[
-              { icon: "@",  lbl: "Email",    title: "majesticnathan576@gmail.com", href: "mailto:majesticnathan576@gmail.com" },
-              { icon: "GH", lbl: "GitHub",   title: "github.com/NathanHoangCS",   href: "https://github.com/NathanHoangCS" },
-              { icon: "in", lbl: "LinkedIn", title: "linkedin.com/in/nathan-hoang",href: "https://www.linkedin.com/in/nathan-hoang-518632251/" },
-            ].map(c => (
-              <a className="c-entry" key={c.lbl} href={c.href} target="_blank" rel="noreferrer">
-                <div className="c-icon">{c.icon}</div>
-                <div>
-                  <div className="c-lbl">{c.lbl}</div>
-                  <div className="c-title">{c.title}</div>
-                </div>
-              </a>
-            ))}
-          </div>
-          <div className="form-col">
-            <label className="f-lbl">Name</label>
-            <input
-              className="f-inp"
-              placeholder="Your name"
-              value={form.name}
-              style={{ borderColor: fieldError.name ? "rgba(220,80,80,0.6)" : undefined }}
-              onChange={e => setForm({...form, name: e.target.value})}
-              onBlur={() => setTouched(t => ({...t, name: true}))}
-            />
-            {fieldError.name && <div className="f-err">{fieldError.name}</div>}
-            <label className="f-lbl">Email</label>
-            <input
-              className="f-inp"
-              placeholder="your@email.com"
-              value={form.email}
-              style={{ borderColor: fieldError.email ? "rgba(220,80,80,0.6)" : undefined }}
-              onChange={e => setForm({...form, email: e.target.value})}
-              onBlur={() => setTouched(t => ({...t, email: true}))}
-            />
-            {fieldError.email && <div className="f-err">{fieldError.email}</div>}
-            <label className="f-lbl">Message</label>
-            <textarea
-              className="f-inp"
-              rows={5}
-              placeholder="What's on your mind..."
-              style={{ resize:"none", borderColor: fieldError.msg ? "rgba(220,80,80,0.6)" : undefined }}
-              value={form.msg}
-              onChange={e => setForm({...form, msg: e.target.value})}
-              onBlur={() => setTouched(t => ({...t, msg: true}))}
-            />
-            {fieldError.msg && <div className="f-err">{fieldError.msg}</div>}
-            {error && (
-                <div style={{ fontSize: 11, color: "rgba(220,80,80,0.9)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10, padding: "8px 10px", background: "rgba(180,40,40,0.12)", border: "1px solid rgba(180,40,40,0.25)" }}>
-                  Something went wrong. Please try again.
-                </div>
-              )}
-            <button className="f-btn" onClick={send} disabled={sending} style={{ opacity: sending ? 0.65 : 1, cursor: sending ? "wait" : "pointer" }}>
-              {sending ? "Sending..." : "Send Message"}
-            </button>
-          </div>
-        </div>
-      )}
+    <div>
+      <div className="form-group">
+        <label className="form-label">Name</label>
+        <input className={`form-input ${errs.name ? "err" : ""}`} placeholder="Your name"
+          value={form.name} onChange={e => setForm({...form, name: e.target.value})}
+          onBlur={() => setTouched(t => ({...t, name: true}))} />
+        {errs.name && <div className="form-err">{errs.name}</div>}
+      </div>
+      <div className="form-group">
+        <label className="form-label">Email</label>
+        <input className={`form-input ${errs.email ? "err" : ""}`} placeholder="your@email.com"
+          value={form.email} onChange={e => setForm({...form, email: e.target.value})}
+          onBlur={() => setTouched(t => ({...t, email: true}))} />
+        {errs.email && <div className="form-err">{errs.email}</div>}
+      </div>
+      <div className="form-group">
+        <label className="form-label">Message</label>
+        <textarea className={`form-input ${errs.msg ? "err" : ""}`} placeholder="What's on your mind..."
+          rows={4} style={{ resize: "none" }}
+          value={form.msg} onChange={e => setForm({...form, msg: e.target.value})}
+          onBlur={() => setTouched(t => ({...t, msg: true}))} />
+        {errs.msg && <div className="form-err">{errs.msg}</div>}
+      </div>
+      {serverErr && <div className="form-err" style={{ marginBottom: 12 }}>Something went wrong. Try again.</div>}
+      <button className="form-submit" onClick={submit} disabled={sending}>
+        {sending ? "Sending..." : "Send message"}
+      </button>
     </div>
   );
 }
 
-// ── APP ──────────────────────────────────────────────────────
-
-const TABS = ["Home", "Projects", "Skills", "Writing", "Contact"];
-
-const LEFT_LISTS = {
-  Home: PROJECTS.slice(0, 5).map(p => ({ id: p.id, name: p.title, sub: p.tags[0] + " · " + p.tags[1], icon: p.title.slice(0,2).toUpperCase(), tag: p.featured ? "Featured" : null })),
-  Projects: PROJECTS.map(p => ({ id: p.id, name: p.title, sub: p.tags.join(", "), icon: p.title.slice(0,2).toUpperCase(), tag: p.featured ? "Featured" : null })),
-  Skills: Object.entries(SKILLS).map(([cat, skills], i) => ({ id: i, name: cat, sub: skills.map(s=>s.name).join(", "), icon: cat.slice(0,2).toUpperCase(), tag: skills.length + " skills" })),
-  Writing: [{ id: 0, name: "Building PlanWise: A Calendar That Actually Learns You", sub: "Apr 2025 · ~8 min read", icon: "01", tag: "New" }],
-  Contact: [
-    { id: 0, name: "Email", sub: "majesticnathan576@gmail.com", icon: "@", tag: null },
-    { id: 1, name: "GitHub", sub: "NathanHoangCS", icon: "GH", tag: null },
-    { id: 2, name: "LinkedIn", sub: "nathan-hoang", icon: "in", tag: null },
-  ],
-};
-
-const LEFT_TITLES = { Home: "Projects", Projects: "All Projects", Skills: "Categories", Writing: "Articles", Contact: "Links" };
-
-function useTypewriter(text, speed = 55, startDelay = 900) {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
-  useEffect(() => {
-    setDisplayed("");
-    setDone(false);
-    let i = 0;
-    const delay = setTimeout(() => {
-      const t = setInterval(() => {
-        i++;
-        setDisplayed(text.slice(0, i));
-        if (i >= text.length) { clearInterval(t); setTimeout(() => setDone(true), 600); }
-      }, speed);
-      return () => clearInterval(t);
-    }, startDelay);
-    return () => clearTimeout(delay);
-  }, [text, speed, startDelay]);
-  return [displayed, done];
-}
-
+// ─────────────────────────────────────────────
+// APP
+// ─────────────────────────────────────────────
 export default function App() {
-  const [tab, setTab] = useState("Home");
-  const [activeItem, setActiveItem] = useState(0);
-  const [listKey, setListKey] = useState(0);
-  const [sweepDone, setSweepDone] = useState(false);
-  const [typedName, nameDone] = useTypewriter("Nathan Hoang", 60, 800);
+  const [loaded, setLoaded] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeModal, setActiveModal] = useState(null);
 
-  useEffect(() => { const t = setTimeout(() => setSweepDone(true), 1200); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 1400);
+    return () => clearTimeout(t);
+  }, []);
 
-  const switchTab = (t) => {
-    setTab(t);
-    setActiveItem(0);
-    setListKey(k => k + 1);
-  };
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
 
-  const list = LEFT_LISTS[tab] || [];
-
-  const renderContent = () => {
-    switch(tab) {
-      case "Projects": return <ProjectsContent />;
-      case "Skills":   return <SkillsContent />;
-      case "Writing":  return <WritingContent />;
-      case "Contact":  return <ContactContent />;
-      default:         return <HomeContent />;
-    }
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <>
       <style>{css}</style>
-      <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Roboto+Condensed:wght@300;400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-      <div className="app">
-        <div className="bg-layer" />
-
-        {/* SCAN LINE SWEEP */}
-        {!sweepDone && <div className="scanline-sweep" />}
-
-        {/* TOP NAV */}
-        <nav className="topnav">
-          <div className="nav-home" onClick={() => switchTab("Home")}>
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-          </div>
-          <div className="nav-tabs">
-            {TABS.map(t => (
-              <div key={t} className={`nav-tab ${tab === t ? "on" : ""}`} onClick={() => switchTab(t)}>{t}</div>
-            ))}
-          </div>
-          <div className="nav-power">⏻</div>
-        </nav>
-
-        {/* BODY */}
-        <div className="body">
-
-          {/* LEFT */}
-          <div className="left">
-            {/* profile */}
-            <div className="profile-row">
-              <div className="avatar-box">NH</div>
-              <div>
-                <div className={`profile-name typewriter ${nameDone ? "done" : ""}`}>{typedName}</div>
-                <div className="profile-sub">CSUF &middot; Class of 2026 &middot; GPA 3.8</div>
-                <div className="avail-row">
-                  <div className="avail-dot" />
-                  <div className="avail-txt">Available</div>
-                </div>
-                <a
-                  href="https://www.linkedin.com/in/nathan-hoang-518632251/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="sidebar-linkedin"
-                >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                  </svg>
-                  linkedin.com/in/nathan-hoang
-                </a>
-              </div>
-            </div>
-
-            {/* list */}
-            <div className="list-head">
-              <span className="list-head-title">{LEFT_TITLES[tab]}</span>
-              <span className="list-head-count">{list.length} total</span>
-            </div>
-
-            <div className="left-list">
-              {list.map((item, i) => (
-                <div
-                  key={`${listKey}-${item.id}`}
-                  className={`list-item list-item-anim ${activeItem === i ? "active" : ""}`}
-                  style={{ animationDelay: `${i * 55}ms` }}
-                  onClick={() => setActiveItem(i)}
-                >
-                  <div className="list-item-icon">{item.icon}</div>
-                  <div className="list-item-info">
-                    <div className="list-item-name">{item.name}</div>
-                    <div className="list-item-sub">{item.sub}</div>
-                  </div>
-                  {item.tag && <div className="list-item-tag">{item.tag}</div>}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* RIGHT */}
-          <div className="right">
-            <div className="right-header">
-              <div className="right-title">{tab === "Home" ? "About Me" : tab}</div>
-              {(tab === "Projects" || tab === "Skills") && (
-                <div className="right-sub-tabs" />
-              )}
-            </div>
-            <div className="right-body">
-              {renderContent()}
-            </div>
-          </div>
-
+      {/* Loading */}
+      <div className={`loading-screen ${loaded ? "out" : ""}`}>
+        <div className="loading-dots">
+          <div className="loading-dot" />
+          <div className="loading-dot" />
+          <div className="loading-dot" />
         </div>
       </div>
+
+      {/* Nav */}
+      <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
+        <span className="nav-name" onClick={() => scrollTo("hero")}>Nathan Hoang</span>
+        <div className="nav-links">
+          <button className="nav-link" onClick={() => scrollTo("work")}>Work</button>
+          <button className="nav-link" onClick={() => scrollTo("about")}>Info</button>
+          <button className="nav-link" onClick={() => scrollTo("writing")}>Writing</button>
+          <a className="nav-link ext" href="https://www.linkedin.com/in/nathan-hoang-518632251/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a className="nav-link ext" href="#" target="_blank" rel="noreferrer">Resume</a>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <section className="hero" id="hero">
+        <div className="hero-scroll-hint">
+          <span className="hero-scroll-label">Scroll</span>
+          <div className="hero-scroll-line" />
+        </div>
+
+        <div className="hero-eyebrow">Software Engineer · Full-Stack & Systems · CSUF 2026</div>
+        <h1 className="hero-headline">
+          Building systems that<br /><em>think, scale,</em><br />and ship.
+        </h1>
+        <div className="hero-bottom">
+          <p className="hero-bio">
+            <strong>Nathan Hoang</strong> — CS student at Cal State Fullerton.
+            I build full-stack applications, AI-powered tools, and systems that
+            care about clean architecture and real-world performance.
+          </p>
+          <div className="hero-status">
+            <div className="status-dot" />
+            Open to internships &amp; entry-level roles
+          </div>
+        </div>
+      </section>
+
+      {/* Work */}
+      <section id="work" className="projects-section">
+        <div className="section-label" style={{ paddingBottom: 24 }}>Selected Work</div>
+        {PROJECTS.map((p, i) => (
+          <ProjectRow key={p.id} project={p} index={i} onClick={setActiveModal} />
+        ))}
+      </section>
+
+      {/* About */}
+      <section id="about" className="about-section">
+        <div>
+          <h2 className="about-headline">I care about the hard problems.</h2>
+          <p className="about-body">
+            CS student at Cal State Fullerton with a passion for building full-stack systems
+            that are fast, reliable, and well-architected. I love working through hard
+            engineering problems and turning them into clean, maintainable code.
+          </p>
+          <p className="about-body">
+            Outside of class I spend my time building projects, contributing to open source,
+            and learning how real production systems work under the hood.
+          </p>
+        </div>
+        <div className="about-right">
+          {[
+            ["Focus",      "Full-Stack & Backend Systems"],
+            ["Currently",  "Building Surge Live"],
+            ["University", "Cal State Fullerton"],
+            ["GPA",        "3.8"],
+            ["Grad",       "Class of 2026"],
+            ["Location",   "Garden Grove, CA"],
+            ["Open To",    "Internships & Entry-Level"],
+          ].map(([label, value]) => (
+            <div className="about-row" key={label}>
+              <span className="about-row-label">{label}</span>
+              <span className="about-row-value">{value}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Skills */}
+      <SkillsSection />
+
+      {/* Writing */}
+      <section id="writing" className="writing-section">
+        <div className="section-label">Writing</div>
+        <div className="writing-article">
+          <div className="article-meta">Apr 2025 &nbsp;·&nbsp; ~8 min read</div>
+          <h2 className="article-title">Building PlanWise: A Calendar That Actually Learns You</h2>
+          <div className="article-tags">
+            {["Full-Stack","React","Python","AI"].map(t => (
+              <span className="article-tag" key={t}>{t}</span>
+            ))}
+          </div>
+
+          <p className="article-para">
+            Most calendar apps treat you like a blank slate every time you open them. You stare at an empty grid,
+            manually type in every event, and the app just sits there. It does not notice that you always block
+            Tuesday mornings for deep work. That bothered me. So I built PlanWise.
+          </p>
+
+          <div className="article-section-head">Starting with data structures</div>
+          <p className="article-para">
+            Before touching the AI, I had to make the backend fast. I built an <span className="article-strong">EventHashMap</span> giving
+            O(1) average-case lookup and an <span className="article-strong">EventMinHeap</span> &mdash; a binary min-heap ordered by
+            (datetime, priority) with lazy deletion. These power every suggestion and conflict check.
+          </p>
+
+          <div className="article-section-head">The pattern engine</div>
+          <p className="article-para">
+            Once events accumulate, the PatternEngine runs over the full history and extracts preferred days,
+            hours, average duration, and overloaded days. Pure Python &mdash; no ML library. The nudge system
+            surfaces recurring patterns as non-intrusive prompts.
+          </p>
+
+          <div className="article-section-head">Bringing in the Claude API</div>
+          <p className="article-para">
+            Three integration points: personalized scheduling suggestions, natural language event creation
+            ("study for calc exam Friday 2 hours"), and conflict detection with context-aware reasoning
+            instead of just "overlap detected."
+          </p>
+
+          <div className="article-section-head">What it taught me</div>
+          <p className="article-para">
+            AI features are only as good as the data you feed them. Getting the data layer right first made
+            the AI layer much easier to build. Building end-to-end from data structures to drag-and-drop UI
+            gave me a clear picture of how all those layers talk to each other.
+          </p>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section id="contact" className="contact-section">
+        <div>
+          <h2 className="contact-headline">Let's work together.</h2>
+          <p className="contact-sub">
+            Open to internships and entry-level software engineering roles.
+            If you have an interesting problem to solve, I'd love to hear about it.
+          </p>
+          <div className="contact-links-list">
+            {[
+              { label: "Email", value: "majesticnathan576@gmail.com", href: "mailto:majesticnathan576@gmail.com" },
+              { label: "LinkedIn", value: "linkedin.com/in/nathan-hoang", href: "https://www.linkedin.com/in/nathan-hoang-518632251/" },
+              { label: "GitHub", value: "github.com/NathanHoangCS", href: "https://github.com/NathanHoangCS" },
+            ].map(c => (
+              <a className="contact-link-row" key={c.label} href={c.href} target="_blank" rel="noreferrer">
+                <span className="contact-link-label">{c.label}</span>
+                <span className="contact-link-value">{c.value}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+        <ContactForm />
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <span className="footer-left">© 2025 Nathan Hoang</span>
+        <span className="footer-right">Built with React &amp; good taste.</span>
+      </footer>
+
+      {/* Modal */}
+      {activeModal && (
+        <ProjectModal project={activeModal} onClose={() => setActiveModal(null)} />
+      )}
     </>
   );
 }
