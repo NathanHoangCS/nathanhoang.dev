@@ -18,6 +18,7 @@ const PROJECTS = [
     accent: "#16a34a",
     github: "https://github.com/NathanHoangCS/PlanWise",
     demo: "https://demo.com",
+    video: null, // TODO: replace with "/planwise-demo.mp4" or hosted URL
     featured: true,
     case: {
       problem: "Most calendar apps treat you like a blank slate. They hold your data and do nothing with it.",
@@ -54,6 +55,7 @@ const PROJECTS = [
     accent: "#3b82f6",
     github: "https://github.com/NathanHoangCS",
     demo: null,
+    video: null, // TODO: replace with "/shrink-demo.mp4" or hosted URL
     featured: true,
     case: {
       problem: "Image compression tools either require uploading files to a server or installing heavy desktop software. Neither is ideal for quick, private compression.",
@@ -84,6 +86,7 @@ const PROJECTS = [
     accent: "#1a56db",
     github: "https://github.com/NathanHoangCS/Surge-Live",
     demo: "https://demo.com",
+    video: null, // TODO: replace with "/surge-demo.mp4" or hosted URL
     featured: true,
     case: {
       problem: "Many prediction platforms focus on short-term engagement and real-money incentives, limiting accessibility and long-term skill development.",
@@ -491,27 +494,26 @@ const css = `
     max-width: 560px;
   }
 
-  /* project image strip */
+  /* project image / video strip */
   .project-img-strip {
     height: 0;
     overflow: hidden;
-    transition: height 0.5s var(--ease);
+    transition: height 0.55s var(--ease);
     margin-top: 0;
   }
 
   .project-row:hover .project-img-strip {
-    height: 200px;
+    height: 220px;
   }
 
   .project-img-placeholder {
-    width: 100%;
-    height: 200px;
-    display: flex; align-items: center; justify-content: center;
     margin-left: 31px;
     width: calc(100% - 31px);
+    height: 220px;
     border-radius: var(--radius);
     position: relative;
     overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
   }
 
   .project-img-bg {
@@ -527,7 +529,54 @@ const css = `
     color: var(--ink);
     opacity: 0.15;
     user-select: none;
+    position: relative; z-index: 1;
   }
+
+  .project-placeholder-hint {
+    position: absolute; bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.12em;
+    text-transform: uppercase;
+    z-index: 2;
+    border: 1px solid var(--line);
+    padding: 4px 12px; border-radius: 100px;
+    background: rgba(15,14,12,0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  /* video */
+  .project-video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .project-video.playing { opacity: 1; }
+
+  .project-video-overlay {
+    position: absolute; bottom: 14px; right: 14px;
+    z-index: 2;
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 500;
+    color: var(--ink2); letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: rgba(15,14,12,0.7);
+    padding: 4px 10px; border-radius: 100px;
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--line);
+  }
+
+  .video-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #ef4444;
+    animation: ledPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
   .project-tags-strip {
     display: flex; gap: 6px;
@@ -1108,8 +1157,28 @@ function ProjectModal({ project, onClose }) {
 }
 
 function ProjectRow({ project, index, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  const videoRef = useRef(null);
+  const [videoReady, setVideoReady] = useState(false);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    if (hovered) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch(() => {});
+    } else {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  }, [hovered]);
+
   return (
-    <div className="project-row" onClick={() => onClick(project)}>
+    <div
+      className="project-row"
+      onClick={() => onClick(project)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <div className="project-row-inner">
         <div className="project-row-left">
           <span className="project-num">0{index + 1}</span>
@@ -1126,7 +1195,35 @@ function ProjectRow({ project, index, onClick }) {
       <div className="project-img-strip">
         <div className="project-img-placeholder" style={{ background: project.color }}>
           <div className="project-img-bg" style={{ background: project.color }} />
-          <span className="project-img-label">{project.title}</span>
+
+          {project.video ? (
+            <>
+              <video
+                ref={videoRef}
+                className={`project-video ${videoReady && hovered ? "playing" : ""}`}
+                src={project.video}
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                onCanPlay={() => setVideoReady(true)}
+              />
+              {hovered && videoReady && (
+                <div className="project-video-overlay">
+                  <div className="video-dot" />
+                  Live Demo
+                </div>
+              )}
+              {(!videoReady || !hovered) && (
+                <span className="project-img-label">{project.title}</span>
+              )}
+            </>
+          ) : (
+            <>
+              <span className="project-img-label">{project.title}</span>
+              <div className="project-placeholder-hint">Demo coming soon</div>
+            </>
+          )}
         </div>
       </div>
       <div className="project-tags-strip">
