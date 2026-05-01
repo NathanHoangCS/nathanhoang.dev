@@ -264,32 +264,94 @@ const css = `
     opacity: 0.5;
   }
 
-  /* ── LOADING ── */
+  /* ── LOADING / BOOT SEQUENCE ── */
   .loading-screen {
     position: fixed; inset: 0; z-index: 200;
-    background: radial-gradient(ellipse at 50% 40%, #1a1510 0%, #0a0906 100%);
+    background: #000;
     display: flex; align-items: center; justify-content: center;
-    transition: opacity 0.6s var(--ease), visibility 0.6s;
+    flex-direction: column; gap: 40px;
+    transition: opacity 0.8s var(--ease), visibility 0.8s;
   }
 
   .loading-screen.out { opacity: 0; visibility: hidden; }
 
-  .loading-dots {
-    display: flex; gap: 8px; align-items: center;
+  /* NH logo — Xbox X style */
+  .boot-logo {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
   }
 
-  .loading-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: rgba(255,200,120,0.9);
-    animation: dotPulse 1.2s ease-in-out infinite;
+  .boot-logo-text {
+    font-family: var(--serif);
+    font-size: 72px;
+    letter-spacing: -0.04em;
+    color: #f0ece4;
+    opacity: 0;
+    animation: bootLogoPulse 2.2s var(--ease) 0.2s forwards;
+    position: relative; z-index: 2;
+    user-select: none;
   }
 
-  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
-  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  /* outer glow ring — like the Xbox green sphere */
+  .boot-glow {
+    position: absolute;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(255,200,100,0.18) 0%,
+      rgba(255,160,50,0.08) 45%,
+      transparent 70%
+    );
+    opacity: 0;
+    animation: bootGlowPulse 2.2s ease 0.2s forwards;
+  }
 
-  @keyframes dotPulse {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
-    40% { transform: scale(1); opacity: 1; }
+  @keyframes bootLogoPulse {
+    0%   { opacity: 0; transform: scale(0.7); filter: blur(12px); }
+    40%  { opacity: 1; transform: scale(1.06); filter: blur(0px); }
+    60%  { opacity: 1; transform: scale(0.98); }
+    80%  { opacity: 1; transform: scale(1.01); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes bootGlowPulse {
+    0%   { opacity: 0; transform: scale(0.3); }
+    40%  { opacity: 1; transform: scale(1.2); }
+    70%  { opacity: 0.7; transform: scale(1); }
+    100% { opacity: 0.5; transform: scale(1.05); }
+  }
+
+  /* spinning ring — Xbox loading ring */
+  .boot-ring-wrap {
+    position: relative;
+    width: 48px; height: 48px;
+    opacity: 0;
+    animation: fadeIn 0.4s ease 0.8s forwards;
+  }
+
+  .boot-ring {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(240,236,228,0.08);
+    border-top-color: rgba(240,236,228,0.75);
+    border-right-color: rgba(240,236,228,0.25);
+    animation: spinRing 0.9s linear infinite;
+    position: absolute; inset: 0;
+  }
+
+  .boot-ring-inner {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(240,236,228,0.04);
+    border-top-color: rgba(240,236,228,0.3);
+    animation: spinRing 1.4s linear infinite reverse;
+    position: absolute;
+    top: 7px; left: 7px;
+  }
+
+  @keyframes spinRing {
+    to { transform: rotate(360deg); }
   }
 
   /* ── HERO ── */
@@ -1003,6 +1065,78 @@ const css = `
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* ── BLADE SLIDE-IN (Xbox blade transition) ── */
+  .blade {
+    opacity: 0;
+    transform: translateX(60px) skewX(-1.5deg);
+    transition:
+      opacity 0.65s var(--ease),
+      transform 0.65s var(--ease);
+  }
+
+  .blade.visible {
+    opacity: 1;
+    transform: translateX(0) skewX(0deg);
+  }
+
+  /* stagger for child blades */
+  .blade-stagger > * {
+    opacity: 0;
+    transform: translateX(50px) skewX(-1deg);
+    transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  }
+
+  .blade-stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:0s; }
+  .blade-stagger.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.07s; }
+  .blade-stagger.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.14s; }
+  .blade-stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.21s; }
+  .blade-stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:0.28s; }
+
+  /* ── MENU GLOW PULSE (Xbox item highlight) ── */
+  .glow-item {
+    position: relative;
+    transition: color 0.2s ease;
+  }
+
+  .glow-item::before {
+    content: '';
+    position: absolute;
+    inset: -8px -16px;
+    background: radial-gradient(
+      ellipse at 50% 50%,
+      rgba(255,200,100,0.10) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    border-radius: 4px;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow-item:hover::before { opacity: 1; }
+
+  .glow-item > * { position: relative; z-index: 1; }
+
+  /* ── SELECTION SNAP ── */
+  .snap-select {
+    transition: transform 0.12s ease;
+  }
+
+  .snap-select:active {
+    transform: scale(0.975);
+  }
+
+  .snap-select.snapping {
+    animation: snapOpen 0.35s var(--ease) forwards;
+  }
+
+  @keyframes snapOpen {
+    0%   { transform: scale(0.975); }
+    50%  { transform: scale(1.015); }
+    100% { transform: scale(1); }
+  }
+
   .reveal {
     opacity: 0; transform: translateY(24px);
     transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
@@ -1174,8 +1308,8 @@ function ProjectRow({ project, index, onClick }) {
 
   return (
     <div
-      className="project-row"
-      onClick={() => onClick(project)}
+      className="project-row snap-select glow-item"
+      onClick={() => { onClick(project); }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -1230,6 +1364,58 @@ function ProjectRow({ project, index, onClick }) {
         {project.tags.map(t => <span className="proj-tag" key={t}>{t}</span>)}
       </div>
     </div>
+  );
+}
+
+function BladeList({ onOpenModal }) {
+  const rows = useRef([]);
+  const [visible, setVisible] = useState([]);
+  const [snapping, setSnapping] = useState(null);
+
+  useEffect(() => {
+    const observers = rows.current.map((el, i) => {
+      if (!el) return null;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              setVisible(v => [...v, i]);
+            }, i * 80);
+            obs.disconnect();
+          }
+        },
+        { threshold: 0.15 }
+      );
+      obs.observe(el);
+      return obs;
+    });
+    return () => observers.forEach(o => o && o.disconnect());
+  }, []);
+
+  const handleClick = (project, i) => {
+    setSnapping(i);
+    setTimeout(() => setSnapping(null), 350);
+  };
+
+  return (
+    <>
+      {PROJECTS.map((p, i) => (
+        <div
+          key={p.id}
+          ref={el => rows.current[i] = el}
+          className={`blade ${visible.includes(i) ? "visible" : ""} ${snapping === i ? "snapping snap-select" : "snap-select"}`}
+        >
+          <ProjectRow
+            project={p}
+            index={i}
+            onClick={(proj) => {
+              handleClick(proj, i);
+              setTimeout(() => onOpenModal(proj), 180);
+            }}
+          />
+        </div>
+      ))}
+    </>
   );
 }
 
@@ -1362,12 +1548,15 @@ export default function App() {
       <style>{css}</style>
       <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-      {/* Loading */}
+      {/* Boot sequence */}
       <div className={`loading-screen ${loaded ? "out" : ""}`}>
-        <div className="loading-dots">
-          <div className="loading-dot" />
-          <div className="loading-dot" />
-          <div className="loading-dot" />
+        <div className="boot-logo">
+          <div className="boot-glow" />
+          <div className="boot-logo-text">NH</div>
+        </div>
+        <div className="boot-ring-wrap">
+          <div className="boot-ring" />
+          <div className="boot-ring-inner" />
         </div>
       </div>
 
@@ -1410,14 +1599,12 @@ export default function App() {
       {/* Work */}
       <section id="work" className="projects-section">
         <div className="section-label" style={{ paddingBottom: 24 }}>Selected Work</div>
-        {PROJECTS.map((p, i) => (
-          <ProjectRow key={p.id} project={p} index={i} onClick={setActiveModal} />
-        ))}
+        <BladeList onOpenModal={setActiveModal} />
       </section>
 
       {/* About */}
-      <section id="about" className="about-section">
-        <div>
+      <section id="about" className="about-section blade-about">
+        <div className="blade visible" style={{transitionDelay:"0.1s"}}>
           <h2 className="about-headline">I care about the hard problems.</h2>
           <p className="about-body">
             CS student at Cal State Fullerton with a passion for building full-stack systems
@@ -1429,7 +1616,7 @@ export default function App() {
             and learning how real production systems work under the hood.
           </p>
         </div>
-        <div className="about-right">
+        <div className="about-right blade visible" style={{transitionDelay:"0.25s"}}>
           {[
             ["Focus",      "Full-Stack & Backend Systems"],
             ["Currently",  "Building Surge Live"],
