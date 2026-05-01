@@ -228,35 +228,38 @@ const css = `
     display: flex; flex-direction: column;
   }
 
-  /* ─── BLADE RAIL (left vertical tabs) ─── */
-  .blade-rail {
+  /* ─── XBOX MENU LAYOUT ─── */
+  /* Left side: logo + menu list. Right side: content */
+
+  .menu-sidebar {
     position: absolute; left: 0; top: 0; bottom: 0;
-    width: 56px;
+    width: 340px;
     display: flex; flex-direction: column;
-    background: rgba(6,6,4,0.95);
-    border-right: 1px solid var(--line);
     z-index: 20;
-    transition: width 0s;
+    padding: 0;
   }
 
-  /* top logo */
-  .rail-logo {
-    height: 60px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    border-bottom: 1px solid var(--line);
-    font-family: var(--serif); font-size: 18px; color: var(--ink);
-    cursor: pointer;
-    transition: background 0.2s;
-    flex-direction: column; gap: 3px;
+  /* logo strip at top */
+  .menu-logo {
+    height: 72px; flex-shrink: 0;
+    display: flex; align-items: center;
+    padding: 0 32px; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
   }
 
-  .rail-logo:hover { background: var(--glow); }
+  .menu-logo-text {
+    font-family: var(--serif); font-size: 22px; color: var(--ink);
+    cursor: pointer; transition: opacity 0.2s;
+  }
 
-  .rail-logo-dot {
-    width: 5px; height: 5px; border-radius: 50%;
+  .menu-logo-text:hover { opacity: 0.75; }
+
+  .menu-logo-dot {
+    width: 7px; height: 7px; border-radius: 50%;
     background: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34,197,94,0.18);
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
     animation: statusPulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
   }
 
   @keyframes statusPulse {
@@ -264,148 +267,136 @@ const css = `
     50%     { box-shadow: 0 0 0 7px rgba(34,197,94,0.05); }
   }
 
-  /* tab list */
-  .rail-tabs {
+  /* the menu item list */
+  .menu-list {
     flex: 1;
     display: flex; flex-direction: column;
-    padding: 12px 0;
-    gap: 2px;
-    overflow: hidden;
+    justify-content: center;
+    padding: 16px 0 16px 32px;
+    gap: 6px;
   }
 
-  .rail-tab {
+  /* each menu item bar — Xbox style */
+  .menu-item {
     position: relative;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    border: none; background: transparent;
+    display: flex; align-items: center;
+    cursor: pointer; border: none;
     font-family: var(--sans);
-    transition: all 0.32s var(--ease);
-    flex-shrink: 0;
+    text-align: left;
+    transition: all 0.22s var(--ease);
     overflow: hidden;
-    /* default collapsed height */
-    height: 48px;
-    border-left: 2px solid transparent;
-  }
-
-  /* hover state — slight expand + glow */
-  .rail-tab:hover {
-    background: rgba(255,200,100,0.04);
-    height: 52px;
-  }
-
-  /* active tab — taller, gold left border, bg glow */
-  .rail-tab.active {
-    height: 80px;
-    background: rgba(255,200,100,0.06);
-    border-left-color: var(--gold);
-  }
-
-  /* active top accent line */
-  .rail-tab.active::after {
-    content: '';
-    position: absolute; top: 0; left: 2px; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-  }
-
-  /* label — rotated vertical text */
-  .rail-tab-label {
-    font-size: 10px; font-weight: 500;
-    letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--ink3);
-    writing-mode: vertical-lr;
-    transform: rotate(180deg);
-    transition: color 0.2s, letter-spacing 0.3s var(--ease);
-    white-space: nowrap;
+    border-radius: 2px;
     user-select: none;
   }
 
-  .rail-tab:hover .rail-tab-label { color: var(--ink2); }
-
-  .rail-tab.active .rail-tab-label {
-    color: var(--ink);
-    letter-spacing: 0.22em;
+  /* inactive item */
+  .menu-item {
+    height: 44px;
+    background: rgba(240,236,228,0.04);
+    border: 1px solid rgba(240,236,228,0.07);
+    padding: 0 20px;
+    width: 88%;
+    opacity: 0.7;
+    transform: translateX(0);
   }
 
-  /* glow blob behind active label */
-  .rail-tab-glow {
+  /* hover */
+  .menu-item:hover {
+    opacity: 0.9;
+    width: 92%;
+    background: rgba(240,236,228,0.07);
+    border-color: rgba(240,236,228,0.14);
+  }
+
+  /* ACTIVE item — wider, brighter, accent border */
+  .menu-item.active {
+    height: 54px;
+    width: 100%;
+    opacity: 1;
+    background: rgba(240,236,228,0.07);
+    border-color: rgba(240,220,150,0.35);
+    border-left: 3px solid var(--gold);
+    transform: translateX(0);
+  }
+
+  /* active glow pulse */
+  .menu-item.active::before {
+    content: '';
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 50%,
-      rgba(255,200,100,0.10) 0%, transparent 70%
+    background: radial-gradient(ellipse at 0% 50%,
+      rgba(240,220,150,0.10) 0%, transparent 60%
     );
-    opacity: 0;
-    transition: opacity 0.35s ease;
     pointer-events: none;
   }
 
-  .rail-tab:hover .rail-tab-glow  { opacity: 0.6; }
-  .rail-tab.active .rail-tab-glow { opacity: 1; }
-
-  /* selection indicator pip */
-  .rail-tab-pip {
-    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-    width: 4px; height: 4px; border-radius: 50%;
-    background: var(--gold);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    box-shadow: 0 0 6px rgba(240,220,150,0.6);
+  /* right-side arrow on active */
+  .menu-item.active::after {
+    content: '›';
+    position: absolute; right: 16px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px; color: rgba(240,220,150,0.6);
+    line-height: 1;
   }
 
-  .rail-tab.active .rail-tab-pip { opacity: 1; }
-
-  /* rail bottom — linkedin + hints */
-  .rail-bottom {
-    flex-shrink: 0;
-    padding: 12px 0;
-    border-top: 1px solid var(--line);
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-  }
-
-  .rail-linkedin {
-    display: flex; align-items: center; justify-content: center;
-    width: 32px; height: 32px;
-    border-radius: 2px;
-    border: 1px solid var(--line);
-    background: transparent;
-    text-decoration: none;
-    transition: all 0.2s;
-    color: var(--ink3);
-  }
-
-  .rail-linkedin:hover {
-    background: rgba(255,200,100,0.06);
-    border-color: rgba(240,220,150,0.2);
+  .menu-item-label {
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    transition: color 0.18s, font-size 0.22s var(--ease), letter-spacing 0.22s;
+    position: relative; z-index: 1;
     color: var(--ink2);
   }
 
-  .rail-linkedin svg { width: 13px; height: 13px; fill: currentColor; }
+  .menu-item:hover .menu-item-label { color: var(--ink); }
 
-  /* controller hint buttons */
-  .rail-hint {
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  .menu-item.active .menu-item-label {
+    color: var(--ink);
+    font-size: 13px;
+    letter-spacing: 0.22em;
+  }
+
+  /* bottom — linkedin */
+  .menu-bottom {
+    flex-shrink: 0;
+    padding: 16px 32px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .menu-linkedin {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 10px; font-weight: 500;
+    color: var(--ink3); letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: color 0.18s;
+  }
+
+  .menu-linkedin:hover { color: var(--ink2); }
+  .menu-linkedin svg { width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }
+
+  .menu-hint {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .hint-pill {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 9px; color: var(--ink3); letter-spacing: 0.1em; text-transform: uppercase;
   }
 
   .hint-btn {
-    width: 18px; height: 18px; border-radius: 50%;
+    width: 16px; height: 16px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 8px; font-weight: 700; color: #000;
-    flex-shrink: 0;
+    font-size: 8px; font-weight: 700; flex-shrink: 0;
   }
 
-  .hint-a { background: #22c55e; }
+  .hint-a { background: #22c55e; color: #000; }
   .hint-b { background: #ef4444; color: #fff; }
-
-  .hint-lbl {
-    font-size: 7px; color: var(--ink3); letter-spacing: 0.12em;
-    text-transform: uppercase; writing-mode: vertical-lr;
-    transform: rotate(180deg);
-  }
 
   /* ─── CONTENT AREA ─── */
   .content-area {
     position: absolute;
-    left: 56px; top: 0; right: 0; bottom: 0;
+    left: 340px; top: 0; right: 0; bottom: 0;
     overflow: hidden;
+    border-left: 1px solid rgba(255,255,255,0.05);
   }
 
   /* each blade page */
@@ -1198,7 +1189,6 @@ export default function App() {
   const [booted,  setBooted]  = useState(false);
   const [active,  setActive]  = useState("home");
   const [prev,    setPrev]    = useState(null);
-  const [hovered, setHovered] = useState(null);
   const [modal,   setModal]   = useState(null);
 
   useEffect(() => {
@@ -1224,8 +1214,8 @@ export default function App() {
     const onKey = e => {
       if (modal) return;
       const i = ids.indexOf(active);
-      if (e.key==="ArrowDown" && i < ids.length-1) goTo(ids[i+1]);
-      if (e.key==="ArrowUp"   && i > 0)            goTo(ids[i-1]);
+      if (e.key==="ArrowDown" && i < ids.length-1) { setPrev(active); setActive(ids[i+1]); }
+      if (e.key==="ArrowUp"   && i > 0)            { setPrev(active); setActive(ids[i-1]); }
     };
     window.addEventListener("keydown", onKey);
     return ()=>window.removeEventListener("keydown", onKey);
@@ -1251,46 +1241,45 @@ export default function App() {
       {/* ── SHELL ── */}
       <div className="shell">
 
-        {/* ── BLADE RAIL (left vertical tabs) ── */}
-        <div className="blade-rail">
+        {/* ── XBOX MENU SIDEBAR ── */}
+        <div className="menu-sidebar">
           {/* logo */}
-          <div className="rail-logo" onClick={()=>goTo("home")}>
-            <span style={{fontFamily:"var(--serif)",fontSize:17}}>NH</span>
-            <div className="rail-logo-dot" />
+          <div className="menu-logo">
+            <div className="menu-logo-dot" />
+            <span className="menu-logo-text" onClick={()=>goTo("home")}>Nathan Hoang</span>
           </div>
 
-          {/* vertical tabs */}
-          <div className="rail-tabs">
+          {/* menu item bars */}
+          <div className="menu-list">
             {TABS.map(t => (
               <div
                 key={t.id}
-                className={`rail-tab ${active===t.id?"active":""}`}
+                className={`menu-item ${active===t.id?"active":""}`}
                 onClick={()=>goTo(t.id)}
-                onMouseEnter={()=>setHovered(t.id)}
-                onMouseLeave={()=>setHovered(null)}
+
               >
-                <div className="rail-tab-glow" />
-                <span className="rail-tab-label">{t.label}</span>
-                <div className="rail-tab-pip" />
+                <span className="menu-item-label">{t.label}</span>
               </div>
             ))}
           </div>
 
-          {/* bottom — linkedin + arrow key hint */}
-          <div className="rail-bottom">
-            <a className="rail-linkedin"
+          {/* bottom bar — linkedin + nav hints */}
+          <div className="menu-bottom">
+            <a className="menu-linkedin"
               href="https://www.linkedin.com/in/nathan-hoang-518632251/"
               target="_blank" rel="noreferrer"
-              title="LinkedIn"
             >
               <svg viewBox="0 0 24 24">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
+              LinkedIn
             </a>
-            <div className="rail-hint">
-              <div className="hint-btn hint-a">▲</div>
-              <div className="hint-btn hint-b" style={{marginTop:2}}>▼</div>
-              <div className="hint-lbl" style={{marginTop:4}}>Nav</div>
+            <div className="menu-hint">
+              <div className="hint-pill">
+                <div className="hint-btn hint-a">↑</div>
+                <div className="hint-btn hint-b">↓</div>
+                Navigate
+              </div>
             </div>
           </div>
         </div>
