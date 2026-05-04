@@ -1,77 +1,41 @@
 import { useState, useEffect } from 'react';
-import Boot from './components/Boot.jsx';
-import MenuSidebar, { TABS } from './components/MenuSidebar.jsx';
-import ProjModal from './components/ProjModal.jsx';
-import HomeBlade from './blades/HomeBlade.jsx';
-import WorkBlade from './blades/WorkBlade.jsx';
-import InfoBlade from './blades/InfoBlade.jsx';
-import WritingBlade from './blades/WritingBlade.jsx';
-import ContactBlade from './blades/ContactBlade.jsx';
+import css from './styles.js';
+import InteractiveScene from './components/InteractiveScene.jsx';
+import WorkPanel    from './panels/WorkPanel.jsx';
+import InfoPanel    from './panels/InfoPanel.jsx';
+import WritingPanel from './panels/WritingPanel.jsx';
+import ContactPanel from './panels/ContactPanel.jsx';
 
 export default function App() {
-  const [booted,  setBooted]  = useState(false);
-  const [active,  setActive]  = useState("home");
-  const [prev,    setPrev]    = useState(null);
-  const [modal,   setModal]   = useState(null);
+  const [booted, setBooted] = useState(false);
+  const [panel,  setPanel]  = useState(null);
 
-  // boot delay
   useEffect(() => {
-    const t = setTimeout(() => setBooted(true), 2700);
+    const t = setTimeout(() => setBooted(true), 3200);
     return () => clearTimeout(t);
   }, []);
 
-  const goTo = id => {
-    if (id === active) return;
-    setPrev(active);
-    setActive(id);
-  };
-
-  const pageClass = id => {
-    if (id === active) return "blade-page active";
-    if (id === prev)   return "blade-page exit-left";
-    return "blade-page";
-  };
-
-  // keyboard ↑↓ navigates blades
-  useEffect(() => {
-    const ids = TABS.map(t => t.id);
-    const onKey = e => {
-      if (modal) return;
-      const i = ids.indexOf(active);
-      if (e.key === "ArrowDown" && i < ids.length - 1) { setPrev(active); setActive(ids[i + 1]); }
-      if (e.key === "ArrowUp"   && i > 0)              { setPrev(active); setActive(ids[i - 1]); }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [active, modal]);
-
   return (
     <>
-      <Boot booted={booted} />
+      <style>{css}</style>
+      <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=IM+Fell+English:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
 
-      <div className="shell">
-        <MenuSidebar active={active} goTo={goTo} />
-
-        <div className="content-area">
-          <div className={pageClass("home")}>
-            <HomeBlade goTo={goTo} />
-          </div>
-          <div className={pageClass("work")}>
-            <WorkBlade onOpen={setModal} />
-          </div>
-          <div className={pageClass("info")}>
-            <InfoBlade />
-          </div>
-          <div className={pageClass("writing")}>
-            <WritingBlade />
-          </div>
-          <div className={pageClass("contact")}>
-            <ContactBlade />
-          </div>
-        </div>
+      {/* Boot */}
+      <div className={`boot ${booted ? "out" : ""}`}>
+        <div className="boot-logo">Portfolio</div>
+        <div className="boot-name">Nathan Hoang</div>
+        <div className="boot-bar" />
+        <div className="boot-role">Software Engineer · CSUF 2026</div>
       </div>
 
-      {modal && <ProjModal project={modal} onClose={() => setModal(null)} />}
+      {/* Interactive Roundtable */}
+      <InteractiveScene onOpen={setPanel} />
+
+      {/* Panels */}
+      {panel === "work"    && <WorkPanel    onClose={() => setPanel(null)} />}
+      {panel === "info"    && <InfoPanel    onClose={() => setPanel(null)} />}
+      {panel === "writing" && <WritingPanel onClose={() => setPanel(null)} />}
+      {panel === "contact" && <ContactPanel onClose={() => setPanel(null)} />}
     </>
   );
 }
